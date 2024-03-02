@@ -1,8 +1,8 @@
 export enum Key {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT,
+  UP = "w",
+  DOWN = "s",
+  LEFT = "a",
+  RIGHT = "d",
 }
 
 export type Stratogem = {
