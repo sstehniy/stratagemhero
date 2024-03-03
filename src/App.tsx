@@ -11,17 +11,29 @@ import ArrowRight from "./assets/keys/arrow_right.svg?react";
 
 const BASE_ROUND_BONUS = 75;
 const BASE_STRATOGEM_COUNT = 6;
-const BASE_ROUND_DURATION = 100000 * 10; // 10 seconds
+const BASE_ROUND_DURATION = 1000 * 10; // 10 seconds
 const STRATOGEM_COMPLETION_BONUS_PER_KEY = 86; // 86 ms per key
 const TIME_BETWEEN_ROUNDS = 300; // 300 ms
 const PERFECT_ROUND_BONUS = 100;
 const FOLLOWING_ROUND_BONUS_ADDITION = 25;
-const SHOW_ROUND_STATS_DURATION = 3000;
+const SHOW_ROUND_STATS_DURATION = 5000;
 const CRITICAL_TIME_LEFT = 2000;
 
 const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
-  const shuffled = stratogems.sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count).map((s) => ({ ...s, uid: v4() }));
+  const shuffled: (Stratogem & { uid: string })[] = [];
+  for (let i = 0; i < count; i++) {
+    const randomIndex = Math.floor(Math.random() * stratogems.length);
+    const stratogem = { ...stratogems[randomIndex], uid: v4() };
+    shuffled.push(stratogem);
+  }
+  return shuffled;
+};
+
+const getFontBasedOnLength = (num: number) => {
+  if (num < 1000) return 60;
+  if (num < 10000) return 50;
+  if (num < 100000) return 45;
+  if (num < 1000000) return 35;
 };
 
 enum GameStatus {
@@ -59,6 +71,8 @@ function App() {
     );
     setTimeLeftForRound(BASE_ROUND_DURATION);
     setCurrentRoundStratogems(roundStratogems);
+    setTotalScore(0);
+    setCurrentRoundScore(0);
     setCurrentStratogem(0);
     setCurrentStratogemKeyIndex(0);
     setGameStatus(GameStatus.GET_READY);
@@ -256,15 +270,6 @@ function App() {
 
   return (
     <div className="main-container">
-      {/* <div>
-        <h1>Stratogems</h1>
-        <h2>Round: {round}</h2>
-        <h2>Score: {totalScore}</h2>
-        <hr />
-        <h2>Current stratogem: {currentStratogem}</h2>
-        <h2>Current stratogem key index: {currentStratogemKeyIndex}</h2>
-        <h2>Time left: {timeLeftForRound}</h2>
-      </div> */}
       {gameStatus === GameStatus.GET_READY && (
         <>
           <div
@@ -303,18 +308,18 @@ function App() {
               color: "var(--light)",
               fontSize: 120,
               marginBottom: 100,
-              marginTop: 250,
+              marginTop: 125,
               fontWeight: "bolder",
             }}
           >
             STRATAGEM HERO
           </h1>
-          <h5
-            style={{ color: "var(--yellow)", fontSize: 50, marginBottom: 80 }}
-          >
+          <h5 style={{ color: "var(--yellow)", fontSize: 50 }}>
             Input any Stratagem Input to Start!
           </h5>
-          <div style={{ display: "flex", gap: 10 }}>
+          <div
+            style={{ display: "flex", gap: 10, position: "fixed", bottom: 40 }}
+          >
             <div
               style={{
                 fontSize: 20,
@@ -367,18 +372,129 @@ function App() {
         </>
       )}
       {gameStatus === GameStatus.ROUND_ENDED && (
-        <div>
-          <div>Round Score: {currentRoundScore}</div>
-          <div>Bonus: {currentRoundBaseBonus}</div>
-          <div>Time bonus: {currentRoundTimeBonus}</div>
-          <div>Perfect: {isPerfectRound ? 100 : 0}</div>
-          <div>Total: {totalScore}</div>
+        <div style={{ width: "clamp(1000px,75vw, 2000px)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span
+              style={{
+                fontSize: 40,
+                color: "var(--light)",
+                fontWeight: "bold",
+              }}
+            >
+              Round Bonus
+            </span>
+            <span
+              style={{
+                fontSize: 80,
+                color: "var(--yellow)",
+                fontWeight: "bold",
+              }}
+            >
+              {currentRoundBaseBonus}
+            </span>
+          </div>
+          <div
+            style={{ display: "flex", justifyContent: "space-between" }}
+            className="hidden first"
+          >
+            <span
+              style={{
+                fontSize: 40,
+                color: "var(--light)",
+                fontWeight: "bold",
+              }}
+            >
+              Time Bonus
+            </span>
+            <span
+              style={{
+                fontSize: 80,
+                color: "var(--yellow)",
+                fontWeight: "bold",
+              }}
+            >
+              {currentRoundTimeBonus}
+            </span>
+          </div>
+          <div
+            style={{ display: "flex", justifyContent: "space-between" }}
+            className="hidden second"
+          >
+            <span
+              style={{
+                fontSize: 40,
+                color: "var(--light)",
+                fontWeight: "bold",
+              }}
+            >
+              Pefect Bonus
+            </span>
+            <span
+              style={{
+                fontSize: 80,
+                color: "var(--yellow)",
+                fontWeight: "bold",
+              }}
+            >
+              {isPerfectRound ? PERFECT_ROUND_BONUS : 0}
+            </span>
+          </div>
+          <div
+            style={{ display: "flex", justifyContent: "space-between" }}
+            className="hidden third"
+          >
+            <span
+              style={{
+                fontSize: 40,
+                color: "var(--light)",
+                fontWeight: "bold",
+              }}
+            >
+              Total Score
+            </span>
+            <span
+              style={{
+                fontSize: 80,
+                color: "var(--yellow)",
+                fontWeight: "bold",
+              }}
+            >
+              {totalScore}
+            </span>
+          </div>
         </div>
       )}
       {gameStatus === GameStatus.FINISHED && (
-        <div>
-          Game finished, total score: {totalScore} <br />
-        </div>
+        <>
+          <div
+            style={{
+              color: "var(--light)",
+              fontWeight: "bolder",
+              fontSize: 120,
+              marginBottom: 77,
+              marginTop: 200,
+            }}
+          >
+            GAME OVER
+          </div>
+          <h5
+            style={{
+              fontSize: 50,
+              color: "var(--light)",
+            }}
+          >
+            YOUR FINAL SCORE
+          </h5>
+          <h5
+            style={{
+              fontSize: 90,
+              color: "var(--yellow)",
+              marginTop: -20,
+            }}
+          >
+            {totalScore}
+          </h5>
+        </>
       )}
       {(gameStatus === GameStatus.STARTED ||
         gameStatus === GameStatus.BETWEEN_STRATOGEMS ||
@@ -386,9 +502,73 @@ function App() {
         <div
           style={{
             display: gameStatus === GameStatus.GET_READY ? "none" : "block",
+            position: "relative",
           }}
         >
-          <div className="stratogem-images-container noscrollbar">
+          <div
+            style={{
+              position: "absolute",
+              top: -15,
+              left: -180,
+              right: 0,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: 40,
+                  color: "var(--light)",
+                  fontWeight: "bold",
+                }}
+              >
+                Round
+              </div>
+              <div
+                style={{
+                  fontSize: 50,
+                  marginLeft: 15,
+                  color: "var(--yellow)",
+                  fontWeight: "bolder",
+                }}
+              >
+                {round}
+              </div>
+            </div>
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              top: -15,
+              right: -180,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  textAlign: "right",
+                  fontVariantNumeric: "tabular-nums",
+                  fontSize: getFontBasedOnLength(
+                    totalScore + currentRoundScore,
+                  ),
+                  color: "var(--yellow)",
+                  fontWeight: "bold",
+                }}
+              >
+                {totalScore + currentRoundScore}
+              </div>
+              <div
+                style={{
+                  marginTop: -20,
+                  fontSize: 45,
+                  color: "var(--light)",
+                  fontWeight: "bolder",
+                }}
+              >
+                SCORE
+              </div>
+            </div>
+          </div>
+          <div className="stratogem-images-container">
             {currentRoundStratogems.slice(currentStratogem).map((str, idx) => (
               <div
                 className={`stratogem-image ${idx === 0 ? "active" : ""} ${

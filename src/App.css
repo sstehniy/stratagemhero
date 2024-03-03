@@ -2,13 +2,13 @@
   display: flex;
   gap: 20px;
   width: 700px;
-  overflow-x: auto;
+  overflow-x: hidden;
   align-items: center;
 }
 
 .stratogem-image {
-  height: 72px;
-  width: 72px;
+  height: 87px;
+  width: 87px;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
@@ -27,8 +27,8 @@
 }
 
 .stratogem-image.active {
-  height: 135px;
-  width: 135px;
+  height: 150px;
+  width: 150px;
   padding: 15px;
 }
 
@@ -58,7 +58,7 @@
 .main-container {
   height: 70vh;
   width: 100vw;
-  text-align: center;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -69,4 +69,31 @@
   background-repeat: no-repeat;
   background-position: center;
 
+}
+
+.hidden {
+  opacity: 0;
+  animation: appear 0.1s linear forwards;
+}
+
+.hidden.first {
+  animation-delay: 0.5s;
+}
+
+.hidden.second {
+  animation-delay: 1.5s;
+}
+
+.hidden.third {
+  animation-delay: 2.5s;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
