@@ -11,7 +11,7 @@ import ArrowRight from "./assets/keys/arrow_right.svg?react";
 
 const BASE_ROUND_BONUS = 75;
 const BASE_STRATOGEM_COUNT = 6;
-const BASE_ROUND_DURATION = 1000 * 10; // 10 seconds
+const BASE_ROUND_DURATION = 100000 * 10; // 10 seconds
 const STRATOGEM_COMPLETION_BONUS_PER_KEY = 86; // 86 ms per key
 const TIME_BETWEEN_ROUNDS = 300; // 300 ms
 const PERFECT_ROUND_BONUS = 100;
@@ -193,7 +193,7 @@ function App() {
         : idx === currentStratogemKeyIndex
           ? { fill: wrongKeyPressed ? "red" : "#D6D6D6" }
           : { fill: "#D6D6D6" };
-    const mergedStyles = { ...style, width: 70, height: "auto" };
+    const mergedStyles = { ...style, height: 50, width: "auto" };
     switch (key) {
       case Key.UP:
         return <ArrowUp style={mergedStyles} key={idx} />;
@@ -240,7 +240,9 @@ function App() {
       {(gameStatus === GameStatus.STARTED ||
         gameStatus === GameStatus.BETWEEN_STRATOGEMS) && (
         <div>
-          <div style={{ display: "flex", gap: 10, width: "100%" }}>
+          <div
+            style={{ display: "flex", gap: 20, width: 700, overflowX: "auto" }}
+          >
             {currentRoundStratogems.slice(currentStratogem).map((str, idx) => (
               <div
                 style={{
