@@ -25,7 +25,6 @@ import SOS_Beacon from "./assets/Support/HD2-SOS.png";
 import Resupply from "./assets/Support/HD2-Resupply.png";
 import NUX_223_Hellbomb from "./assets/Support/HD2-Hellbomb.png";
 import SSSD_Delivery from "./assets/Support/DeliverSSSDicon.webp";
-import Seismic_Probe from "./assets/Support/HD2-Seismic.png";
 import Upload_Data from "./assets/Support/HD2-Upload.png";
 import Eagle_Rearm from "./assets/Support/HD2-ERA.png";
 
@@ -220,7 +219,7 @@ export const stratogems: Stratogem[] = [
     name: "Seismic Probe",
     keys: [Key.UP, Key.UP, Key.LEFT, Key.RIGHT, Key.DOWN, Key.DOWN],
     keyCount: 6,
-    image: Seismic_Probe,
+    image: "",
   },
   {
     name: "Upload Data",
