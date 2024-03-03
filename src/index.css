@@ -42,3 +42,8 @@
   scrollbar-width: none;
   /* Firefox */
 }
+
+a {
+  text-decoration: none;
+  color: var(--yellow);
+}
