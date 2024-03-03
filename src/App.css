@@ -1,42 +1,72 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.stratogem-images-container {
+  display: flex;
+  gap: 20px;
+  width: 700px;
+  overflow-x: auto;
+  align-items: center;
+}
+
+.stratogem-image {
+  height: 72px;
+  width: 72px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+
+}
+
+.stratogem-image:not(.active) {
+  filter: opacity(0.6);
+
+}
+
+.stratogem-image img {
+  height: 100%;
+  width: 100%;
+
+}
+
+.stratogem-image.active {
+  height: 135px;
+  width: 135px;
+  padding: 15px;
+}
+
+
+.stratogem-image.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  background-color: transparent;
+  border: 5px solid var(--yellow);
+}
+
+.stratogem-image.active.danger::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  background-color: transparent;
+  border: 5px solid var(--danger);
+}
+
+.main-container {
+  height: 70vh;
+  width: 100vw;
   text-align: center;
-}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-top: 3px solid var(--light);
+  border-bottom: 3px solid var(--light);
+  background-image: url(./assets/emblem.svg);
+  background-repeat: no-repeat;
+  background-position: center;
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

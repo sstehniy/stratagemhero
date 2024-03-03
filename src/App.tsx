@@ -16,6 +16,8 @@ const STRATOGEM_COMPLETION_BONUS_PER_KEY = 86; // 86 ms per key
 const TIME_BETWEEN_ROUNDS = 300; // 300 ms
 const PERFECT_ROUND_BONUS = 100;
 const FOLLOWING_ROUND_BONUS_ADDITION = 25;
+const SHOW_ROUND_STATS_DURATION = 3000;
+const CRITICAL_TIME_LEFT = 2000;
 
 const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
   const shuffled = stratogems.sort(() => Math.random() - 0.5);
@@ -28,6 +30,7 @@ enum GameStatus {
   FINISHED,
   ROUND_ENDED,
   BETWEEN_STRATOGEMS,
+  GET_READY,
 }
 
 function App() {
@@ -47,8 +50,9 @@ function App() {
   const [wrongKeyPressed, setWrongKeyPressed] = useState(false);
   const intervalRef = useRef<number | null>(null);
 
-  const handleStartGame = () => {
+  const handleStartGame = useCallback(() => {
     console.log("handleStartGame");
+    setWrongKeyPressed(false);
     setRound(1);
     const roundStratogems = shuffleStratogems(
       BASE_STRATOGEM_COUNT + (round - 1),
@@ -57,8 +61,8 @@ function App() {
     setCurrentRoundStratogems(roundStratogems);
     setCurrentStratogem(0);
     setCurrentStratogemKeyIndex(0);
-    setGameStatus(GameStatus.STARTED);
-  };
+    setGameStatus(GameStatus.GET_READY);
+  }, [round]);
 
   const updateScoreOnRoundCompletion = useCallback(() => {
     console.log("updateScoreOnRoundCompletion");
@@ -83,7 +87,7 @@ function App() {
     setIsPerfectRound(true);
     setCurrentStratogemKeyIndex(0);
     setTimeLeftForRound(BASE_ROUND_DURATION);
-    setGameStatus(GameStatus.STARTED);
+    setGameStatus(GameStatus.GET_READY);
   }, [round]);
 
   const handleKeyStroke = useCallback(
@@ -109,15 +113,13 @@ function App() {
             setGameStatus(GameStatus.ROUND_ENDED);
             window.removeEventListener("keydown", handleKeyStroke);
             updateScoreOnRoundCompletion();
-            setTimeout(startNextRound, 5000);
+            setTimeout(startNextRound, SHOW_ROUND_STATS_DURATION);
           } else {
             console.log("not last stratogem in round");
             // move to next stratogem in current round
             const roundScore = currentStratogemObject.keyCount * 5;
             setCurrentRoundScore((prev) => prev + roundScore);
 
-            setCurrentStratogemKeyIndex(0);
-            setCurrentStratogem(currentStratogem + 1);
             // add bonus time to current round
             setTimeLeftForRound(
               (prev) =>
@@ -127,6 +129,8 @@ function App() {
             );
             setGameStatus(GameStatus.BETWEEN_STRATOGEMS);
             setTimeout(() => {
+              setCurrentStratogemKeyIndex(0);
+              setCurrentStratogem(currentStratogem + 1);
               setGameStatus(GameStatus.STARTED);
             }, TIME_BETWEEN_ROUNDS);
           }
@@ -135,6 +139,9 @@ function App() {
         }
       } else if (["w", "a", "s", "d"].includes(e.key)) {
         setWrongKeyPressed(true);
+        setTimeout(() => {
+          setWrongKeyPressed(false);
+        }, 150);
         setIsPerfectRound(false);
       }
     },
@@ -147,15 +154,44 @@ function App() {
     ],
   );
 
+  const handleStartGameKeyPress = useCallback(
+    (e: KeyboardEvent) => {
+      if (!["w", "a", "s", "d"].includes(e.key)) return;
+      if (gameStatus === GameStatus.NONE) {
+        handleStartGame();
+        window.removeEventListener("keydown", handleStartGameKeyPress);
+      }
+    },
+    [gameStatus, handleStartGame],
+  );
+
   useEffect(() => {
-    if (gameStatus === GameStatus.NONE) return;
+    if (gameStatus === GameStatus.NONE) {
+      window.addEventListener("keydown", handleStartGameKeyPress);
+      return;
+    }
     if (
       gameStatus === GameStatus.ROUND_ENDED ||
-      gameStatus === GameStatus.FINISHED ||
       gameStatus === GameStatus.BETWEEN_STRATOGEMS
     ) {
       if (intervalRef.current) clearInterval(intervalRef.current);
       window.removeEventListener("keydown", handleKeyStroke);
+      return;
+    }
+
+    if (gameStatus === GameStatus.FINISHED) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      window.removeEventListener("keydown", handleKeyStroke);
+      setTimeout(() => {
+        setGameStatus(GameStatus.NONE);
+      }, 5000);
+      return;
+    }
+
+    if (gameStatus === GameStatus.GET_READY) {
+      setTimeout(() => {
+        setGameStatus(GameStatus.STARTED);
+      }, 3000);
       return;
     }
 
@@ -176,6 +212,7 @@ function App() {
       return () => {
         if (intervalRef.current) clearInterval(intervalRef.current);
         window.removeEventListener("keydown", handleKeyStroke);
+        window.removeEventListener("keydown", handleStartGameKeyPress);
       };
     }
   }, [
@@ -184,16 +221,25 @@ function App() {
     currentStratogemKeyIndex,
     gameStatus,
     handleKeyStroke,
+    handleStartGameKeyPress,
   ]);
 
   const renderKey = (key: Key, idx: number) => {
     const style: CSSProperties =
-      idx < currentStratogemKeyIndex
-        ? { fill: "green" }
+      idx < currentStratogemKeyIndex ||
+      gameStatus === GameStatus.BETWEEN_STRATOGEMS
+        ? {
+            fill: "var(--yellow)",
+          }
         : idx === currentStratogemKeyIndex
-          ? { fill: wrongKeyPressed ? "red" : "#D6D6D6" }
-          : { fill: "#D6D6D6" };
-    const mergedStyles = { ...style, height: 50, width: "auto" };
+          ? { fill: wrongKeyPressed ? "var(--danger)" : "var(--lightgrey)" }
+          : { fill: "var(--lightgrey)" };
+    const mergedStyles = {
+      ...style,
+      height: 50,
+      width: "auto",
+      transition: "all 0.1s ease",
+    };
     switch (key) {
       case Key.UP:
         return <ArrowUp style={mergedStyles} key={idx} />;
@@ -209,8 +255,8 @@ function App() {
   };
 
   return (
-    <>
-      <div>
+    <div className="main-container">
+      {/* <div>
         <h1>Stratogems</h1>
         <h2>Round: {round}</h2>
         <h2>Score: {totalScore}</h2>
@@ -218,9 +264,107 @@ function App() {
         <h2>Current stratogem: {currentStratogem}</h2>
         <h2>Current stratogem key index: {currentStratogemKeyIndex}</h2>
         <h2>Time left: {timeLeftForRound}</h2>
-      </div>
+      </div> */}
+      {gameStatus === GameStatus.GET_READY && (
+        <>
+          <div
+            style={{
+              color: "var(--light)",
+              fontWeight: "bolder",
+              fontSize: 120,
+              marginBottom: 77,
+              marginTop: 200,
+            }}
+          >
+            GET READY
+          </div>
+          <h5
+            style={{
+              fontSize: 50,
+              color: "var(--light)",
+            }}
+          >
+            Round
+          </h5>
+          <h5
+            style={{
+              fontSize: 90,
+              color: "var(--yellow)",
+            }}
+          >
+            {round}
+          </h5>
+        </>
+      )}
       {gameStatus === GameStatus.NONE && (
-        <button onClick={handleStartGame}>start game</button>
+        <>
+          <h1
+            style={{
+              color: "var(--light)",
+              fontSize: 120,
+              marginBottom: 100,
+              marginTop: 250,
+              fontWeight: "bolder",
+            }}
+          >
+            STRATAGEM HERO
+          </h1>
+          <h5
+            style={{ color: "var(--yellow)", fontSize: 50, marginBottom: 80 }}
+          >
+            Input any Stratagem Input to Start!
+          </h5>
+          <div style={{ display: "flex", gap: 10 }}>
+            <div
+              style={{
+                fontSize: 20,
+                backgroundColor: "var(--yellow)",
+                padding: "8px 15px",
+                borderRadius: 7,
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              w
+            </div>
+            <div
+              style={{
+                fontSize: 20,
+                backgroundColor: "var(--yellow)",
+                padding: "8px 15px",
+                borderRadius: 7,
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              a
+            </div>
+            <div
+              style={{
+                fontSize: 20,
+                backgroundColor: "var(--yellow)",
+                padding: "8px 15px",
+                borderRadius: 7,
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              s
+            </div>
+            <div
+              style={{
+                fontSize: 20,
+                backgroundColor: "var(--yellow)",
+                padding: "8px 15px",
+                borderRadius: 7,
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              d
+            </div>
+          </div>
+        </>
       )}
       {gameStatus === GameStatus.ROUND_ENDED && (
         <div>
@@ -234,22 +378,22 @@ function App() {
       {gameStatus === GameStatus.FINISHED && (
         <div>
           Game finished, total score: {totalScore} <br />
-          <button onClick={handleStartGame}>retry</button>
         </div>
       )}
       {(gameStatus === GameStatus.STARTED ||
-        gameStatus === GameStatus.BETWEEN_STRATOGEMS) && (
-        <div>
-          <div
-            style={{ display: "flex", gap: 20, width: 700, overflowX: "auto" }}
-          >
+        gameStatus === GameStatus.BETWEEN_STRATOGEMS ||
+        gameStatus === GameStatus.GET_READY) && (
+        <div
+          style={{
+            display: gameStatus === GameStatus.GET_READY ? "none" : "block",
+          }}
+        >
+          <div className="stratogem-images-container noscrollbar">
             {currentRoundStratogems.slice(currentStratogem).map((str, idx) => (
               <div
-                style={{
-                  height: 100,
-                  width: 100,
-                  border: idx === 0 ? "2px solid red" : "none",
-                }}
+                className={`stratogem-image ${idx === 0 ? "active" : ""} ${
+                  timeLeftForRound <= CRITICAL_TIME_LEFT ? "danger" : ""
+                }`}
                 key={str.uid}
               >
                 <img
@@ -262,17 +406,46 @@ function App() {
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 10, width: "100%" }}>
+          <div
+            style={{
+              textAlign: "center",
+              backgroundColor:
+                timeLeftForRound <= CRITICAL_TIME_LEFT
+                  ? "var(--danger)"
+                  : "var(--yellow)",
+              fontSize: 36,
+              padding: 0,
+              fontWeight: "bolder",
+              color:
+                timeLeftForRound <= CRITICAL_TIME_LEFT
+                  ? "var(--light)"
+                  : "var(--dark)",
+              marginTop: -5,
+              letterSpacing: 1.5,
+            }}
+          >
+            {currentRoundStratogems[currentStratogem].name.toUpperCase()}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+              width: "100%",
+              margin: "15px 0px 60px 0px",
+            }}
+          >
             {currentRoundStratogems[currentStratogem].keys.map((key, idx) =>
               renderKey(key, idx),
             )}
           </div>
           <div
             style={{
-              width: 700,
-              height: 50,
+              width: 660,
+              height: 30,
               position: "relative",
-              backgroundColor: "grey",
+              backgroundColor: "var(--darkerlightgrey)",
+              margin: "0 auto",
             }}
           >
             <div
@@ -282,13 +455,16 @@ function App() {
                 top: 0,
                 left: 0,
                 width: `${(timeLeftForRound / BASE_ROUND_DURATION) * 100}%`,
-                backgroundColor: "yellow",
+                backgroundColor:
+                  timeLeftForRound <= CRITICAL_TIME_LEFT
+                    ? "var(--danger)"
+                    : "var(--yellow)",
               }}
             ></div>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
