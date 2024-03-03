@@ -66,7 +66,6 @@ function App() {
   const intervalRef = useRef<number | null>(null);
 
   const handleStartGame = useCallback(() => {
-    console.log("handleStartGame");
     setWrongKeyPressed(false);
     setRound(1);
     const roundStratogems = shuffleStratogems(
@@ -82,7 +81,6 @@ function App() {
   }, [round]);
 
   const updateScoreOnRoundCompletion = useCallback(() => {
-    console.log("updateScoreOnRoundCompletion");
     //calculate total score
     const baseBonus =
       BASE_ROUND_BONUS + (round - 1) * FOLLOWING_ROUND_BONUS_ADDITION;
@@ -96,7 +94,6 @@ function App() {
   }, [currentRoundScore, isPerfectRound, round, timeLeftForRound]);
 
   const startNextRound = useCallback(() => {
-    console.log("startNextRound");
     setRound((prev) => prev + 1);
     setCurrentRoundScore(0);
     setCurrentRoundStratogems(shuffleStratogems(BASE_STRATOGEM_COUNT + round));
@@ -117,12 +114,9 @@ function App() {
       if (e.key === currentStratogemKey) {
         // last key in current stratogem of current round
         if (currentStratogemKeyIndex === currentStratogemObject.keyCount - 1) {
-          console.log("last key in stratogem");
           // current stratogem is the last in current round
           if (currentStratogem === currentRoundStratogems.length - 1) {
-            console.log("last stratogem in round");
             if (intervalRef.current) {
-              console.log("clearing interval");
               clearInterval(intervalRef.current);
             }
             window.removeEventListener("keydown", handleKeyStroke);
@@ -142,7 +136,6 @@ function App() {
             startNextRound();
             return;
           } else {
-            console.log("not last stratogem in round");
             // move to next stratogem in current round
             const roundScore = currentStratogemObject.keyCount * 5;
             setCurrentRoundScore((prev) => prev + roundScore);
@@ -228,13 +221,13 @@ function App() {
 
         intervalRef.current = setInterval(() => {
           setTimeLeftForRound((prev) => {
-            const newTime = Math.max(0, prev - 10);
+            const newTime = prev - Math.min(prev, 16);
             if (newTime === 0) {
               setGameStatus(GameStatus.FINISHED);
             }
             return newTime;
           });
-        }, 10);
+        }, 16);
       }
     };
     setup();
