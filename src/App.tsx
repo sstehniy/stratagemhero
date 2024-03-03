@@ -250,14 +250,6 @@ function App() {
     let style: CSSProperties = {
       fill: "var(--lightgrey)",
     };
-    // idx < currentStratogemKeyIndex ||
-    // gameStatus === GameStatus.BETWEEN_STRATOGEMS
-    //   ? {
-    //       fill: "var(--yellow)",
-    //     }
-    //   : idx === currentStratogemKeyIndex
-    //     ? { fill: wrongKeyPressed ? "var(--danger)" : "var(--lightgrey)" }
-    //     : { fill: "var(--lightgrey)" };
     if (idx < currentStratogemKeyIndex) {
       style = {
         fill: "var(--yellow)",
