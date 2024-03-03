@@ -24,7 +24,7 @@ import Reinforce from "./assets/Support/HD2-Reinforcement.png";
 import SOS_Beacon from "./assets/Support/HD2-SOS.png";
 import Resupply from "./assets/Support/HD2-Resupply.png";
 import NUX_223_Hellbomb from "./assets/Support/HD2-Hellbomb.png";
-import SSSD_Delivery from "./assets/Support/DeliverSSSDicon.webp";
+
 import Upload_Data from "./assets/Support/HD2-Upload.png";
 import Eagle_Rearm from "./assets/Support/HD2-ERA.png";
 
@@ -210,18 +210,6 @@ export const stratogems: Stratogem[] = [
     image: NUX_223_Hellbomb,
   },
   {
-    name: "SSSD Delivery",
-    keys: [Key.DOWN, Key.DOWN, Key.DOWN, Key.UP, Key.UP],
-    keyCount: 5,
-    image: SSSD_Delivery,
-  },
-  {
-    name: "Seismic Probe",
-    keys: [Key.UP, Key.UP, Key.LEFT, Key.RIGHT, Key.DOWN, Key.DOWN],
-    keyCount: 6,
-    image: "",
-  },
-  {
     name: "Upload Data",
     keys: [Key.DOWN, Key.DOWN, Key.UP, Key.UP, Key.UP],
     keyCount: 5,
@@ -232,12 +220,6 @@ export const stratogems: Stratogem[] = [
     keys: [Key.UP, Key.UP, Key.LEFT, Key.UP, Key.RIGHT],
     keyCount: 5,
     image: Eagle_Rearm,
-  },
-  {
-    name: "Illumination Flare",
-    keys: [Key.RIGHT, Key.RIGHT, Key.LEFT, Key.LEFT],
-    keyCount: 4,
-    image: "",
   },
   {
     name: "E/MG-101 HMG Emplacement",
