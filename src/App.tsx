@@ -29,6 +29,9 @@ const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
   return shuffled;
 };
 
+const waitForTimeout = (timeout: number) =>
+  new Promise((resolve) => setTimeout(resolve, timeout));
+
 const getFontBasedOnLength = (num: number) => {
   if (num < 1000) return 60;
   if (num < 10000) return 50;
@@ -105,7 +108,7 @@ function App() {
   }, [round]);
 
   const handleKeyStroke = useCallback(
-    (e: KeyboardEvent) => {
+    async (e: KeyboardEvent) => {
       setWrongKeyPressed(false);
       const currentStratogemObject = currentRoundStratogems[currentStratogem];
       const currentStratogemKey =
@@ -118,16 +121,26 @@ function App() {
           // current stratogem is the last in current round
           if (currentStratogem === currentRoundStratogems.length - 1) {
             console.log("last stratogem in round");
+            if (intervalRef.current) {
+              console.log("clearing interval");
+              clearInterval(intervalRef.current);
+            }
+            window.removeEventListener("keydown", handleKeyStroke);
+
             setTimeLeftForRound(
               (prev) =>
                 prev +
                 currentStratogemObject.keyCount *
                   STRATOGEM_COMPLETION_BONUS_PER_KEY,
             );
-            setGameStatus(GameStatus.ROUND_ENDED);
-            window.removeEventListener("keydown", handleKeyStroke);
+            setGameStatus(GameStatus.BETWEEN_STRATOGEMS);
+            await waitForTimeout(TIME_BETWEEN_ROUNDS);
             updateScoreOnRoundCompletion();
-            setTimeout(startNextRound, SHOW_ROUND_STATS_DURATION);
+            setGameStatus(GameStatus.ROUND_ENDED);
+            await waitForTimeout(SHOW_ROUND_STATS_DURATION);
+
+            startNextRound();
+            return;
           } else {
             console.log("not last stratogem in round");
             // move to next stratogem in current round
@@ -142,21 +155,20 @@ function App() {
                   STRATOGEM_COMPLETION_BONUS_PER_KEY,
             );
             setGameStatus(GameStatus.BETWEEN_STRATOGEMS);
-            setTimeout(() => {
-              setCurrentStratogemKeyIndex(0);
-              setCurrentStratogem(currentStratogem + 1);
-              setGameStatus(GameStatus.STARTED);
-            }, TIME_BETWEEN_ROUNDS);
+            await waitForTimeout(TIME_BETWEEN_ROUNDS);
+            setCurrentStratogemKeyIndex(0);
+            setCurrentStratogem(currentStratogem + 1);
+            setGameStatus(GameStatus.STARTED);
           }
         } else {
           setCurrentStratogemKeyIndex((prev) => prev + 1);
         }
       } else if (["w", "a", "s", "d"].includes(e.key)) {
         setWrongKeyPressed(true);
-        setTimeout(() => {
-          setWrongKeyPressed(false);
-        }, 150);
         setIsPerfectRound(false);
+        await waitForTimeout(100);
+        setCurrentStratogemKeyIndex(0);
+        setWrongKeyPressed(false);
       }
     },
     [
@@ -180,55 +192,58 @@ function App() {
   );
 
   useEffect(() => {
-    if (gameStatus === GameStatus.NONE) {
-      window.addEventListener("keydown", handleStartGameKeyPress);
-      return;
-    }
-    if (
-      gameStatus === GameStatus.ROUND_ENDED ||
-      gameStatus === GameStatus.BETWEEN_STRATOGEMS
-    ) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      window.removeEventListener("keydown", handleKeyStroke);
-      return;
-    }
-
-    if (gameStatus === GameStatus.FINISHED) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      window.removeEventListener("keydown", handleKeyStroke);
-      setTimeout(() => {
-        setGameStatus(GameStatus.NONE);
-      }, 5000);
-      return;
-    }
-
-    if (gameStatus === GameStatus.GET_READY) {
-      setTimeout(() => {
-        setGameStatus(GameStatus.STARTED);
-      }, 3000);
-      return;
-    }
-
-    if (intervalRef.current) clearInterval(intervalRef.current);
-
-    if (gameStatus === GameStatus.STARTED) {
-      window.addEventListener("keydown", handleKeyStroke);
-
-      intervalRef.current = setInterval(() => {
-        setTimeLeftForRound((prev) => {
-          const newTime = Math.max(0, prev - 10);
-          if (newTime === 0) {
-            setGameStatus(GameStatus.FINISHED);
-          }
-          return newTime;
-        });
-      }, 10);
-      return () => {
+    const setup = async () => {
+      if (gameStatus === GameStatus.NONE) {
+        window.addEventListener("keydown", handleStartGameKeyPress);
+        return;
+      }
+      if (
+        gameStatus === GameStatus.ROUND_ENDED ||
+        gameStatus === GameStatus.BETWEEN_STRATOGEMS
+      ) {
         if (intervalRef.current) clearInterval(intervalRef.current);
         window.removeEventListener("keydown", handleKeyStroke);
-        window.removeEventListener("keydown", handleStartGameKeyPress);
-      };
-    }
+        return;
+      }
+
+      if (gameStatus === GameStatus.FINISHED) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        window.removeEventListener("keydown", handleKeyStroke);
+        await waitForTimeout(5000);
+        setGameStatus(GameStatus.NONE);
+        return;
+      }
+
+      if (gameStatus === GameStatus.GET_READY) {
+        await waitForTimeout(3000);
+
+        setGameStatus(GameStatus.STARTED);
+        return;
+      }
+
+      if (intervalRef.current) clearInterval(intervalRef.current);
+
+      if (gameStatus === GameStatus.STARTED) {
+        window.addEventListener("keydown", handleKeyStroke);
+
+        intervalRef.current = setInterval(() => {
+          setTimeLeftForRound((prev) => {
+            const newTime = Math.max(0, prev - 10);
+            if (newTime === 0) {
+              setGameStatus(GameStatus.FINISHED);
+            }
+            return newTime;
+          });
+        }, 10);
+      }
+    };
+    setup();
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      window.removeEventListener("keydown", handleKeyStroke);
+      window.removeEventListener("keydown", handleStartGameKeyPress);
+    };
   }, [
     currentRoundStratogems,
     currentStratogem,
@@ -239,15 +254,33 @@ function App() {
   ]);
 
   const renderKey = (key: Key, idx: number) => {
-    const style: CSSProperties =
-      idx < currentStratogemKeyIndex ||
-      gameStatus === GameStatus.BETWEEN_STRATOGEMS
-        ? {
-            fill: "var(--yellow)",
-          }
-        : idx === currentStratogemKeyIndex
-          ? { fill: wrongKeyPressed ? "var(--danger)" : "var(--lightgrey)" }
-          : { fill: "var(--lightgrey)" };
+    let style: CSSProperties = {
+      fill: "var(--lightgrey)",
+    };
+    // idx < currentStratogemKeyIndex ||
+    // gameStatus === GameStatus.BETWEEN_STRATOGEMS
+    //   ? {
+    //       fill: "var(--yellow)",
+    //     }
+    //   : idx === currentStratogemKeyIndex
+    //     ? { fill: wrongKeyPressed ? "var(--danger)" : "var(--lightgrey)" }
+    //     : { fill: "var(--lightgrey)" };
+    if (idx < currentStratogemKeyIndex) {
+      style = {
+        fill: "var(--yellow)",
+      };
+    }
+    if (gameStatus === GameStatus.BETWEEN_STRATOGEMS) {
+      style = {
+        fill: "var(--yellow)",
+      };
+    }
+    if (wrongKeyPressed && idx < currentStratogemKeyIndex) {
+      style = {
+        fill: "var(--danger)",
+      };
+    }
+
     const mergedStyles = {
       ...style,
       height: 50,
