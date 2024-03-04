@@ -1,17 +1,68 @@
 .getReadyText {
   color: var(--light);
   font-weight: bolder;
-  font-size: 120px;
-  margin-bottom: 77px;
-  margin-top: 200px;
+  font-size: 60px;
+  /* Mobile-first font size */
+  margin-bottom: 20px;
+  /* Mobile-first margin-bottom */
+  margin-top: 120px;
+  /* Mobile-first margin-top */
 }
 
 .roundLabel {
-  font-size: 50px;
+  font-size: 40px;
+  /* Mobile-first font size */
   color: var(--light);
 }
 
 .roundNumber {
-  font-size: 90px;
+  font-size: 60px;
+  /* Mobile-first font size */
   color: var(--yellow);
+}
+
+@media screen and (min-width: 541px) {
+  .getReadyText {
+    font-size: 100px;
+    /* Tablet font size */
+    margin-bottom: 50px;
+    /* Tablet margin-bottom */
+    margin-top: 200px;
+    /* Tablet margin-top */
+  }
+
+  .roundLabel {
+    font-size: 50px;
+    /* Tablet font size */
+  }
+
+  .roundNumber {
+    font-size: 80px;
+    /* Tablet font size */
+    margin-top: -20px;
+    /* Tablet margin-top */
+  }
+
+}
+
+@media screen and (min-width: 769px) {
+  .getReadyText {
+    font-size: 120px;
+    /* Desktop font size */
+    margin-bottom: 50px;
+    /* Desktop margin-bottom */
+    margin-top: 200px;
+    /* Desktop margin-top */
+  }
+
+  .roundLabel {
+    font-size: 50px;
+    /* Desktop font size */
+  }
+
+  .roundNumber {
+    font-size: 90px;
+    margin-top: -20px;
+    /* Desktop font size */
+  }
 }

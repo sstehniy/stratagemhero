@@ -1,6 +1,5 @@
 import { BASE_ROUND_DURATION, CRITICAL_TIME_LEFT } from "../../constants";
 import { GameStatus, Key, Stratogem } from "../../types";
-import { getFontBasedOnLength } from "../../util";
 
 import ArrowUp from "../../assets/keys/arrow_up.svg?react";
 import ArrowDown from "../../assets/keys/arrow_down.svg?react";
@@ -53,19 +52,26 @@ export const Game = ({
 
     const mergedStyles = {
       ...style,
-      height: 50,
       width: "auto",
       transition: "all 0.1s ease",
     };
     switch (key) {
       case Key.UP:
-        return <ArrowUp style={mergedStyles} key={idx} />;
+        return (
+          <ArrowUp className={styles.key} style={mergedStyles} key={idx} />
+        );
       case Key.DOWN:
-        return <ArrowDown style={mergedStyles} key={idx} />;
+        return (
+          <ArrowDown className={styles.key} style={mergedStyles} key={idx} />
+        );
       case Key.LEFT:
-        return <ArrowLeft style={mergedStyles} key={idx} />;
+        return (
+          <ArrowLeft className={styles.key} style={mergedStyles} key={idx} />
+        );
       case Key.RIGHT:
-        return <ArrowRight style={mergedStyles} key={idx} />;
+        return (
+          <ArrowRight className={styles.key} style={mergedStyles} key={idx} />
+        );
       default:
         return null;
     }
@@ -85,19 +91,14 @@ export const Game = ({
       </div>
       <div className={styles.scoreContainer}>
         <div>
-          <div
-            style={{
-              fontSize: getFontBasedOnLength(totalScore + currentRoundScore),
-            }}
-            className={styles.scoreValue}
-          >
+          <div className={styles.scoreValue}>
             {totalScore + currentRoundScore}
           </div>
           <div className={styles.scoreLabel}>SCORE</div>
         </div>
       </div>
       <div
-        className={`${styles.stratogemImagesContainer} ${timeLeftForRound <= CRITICAL_TIME_LEFT ? styles.danger : ""}`}
+        className={`${styles.stratogemImagesContainer} ${timeLeftForRound <= CRITICAL_TIME_LEFT ? styles.danger : ""} ${styles.noscrollbar}`}
       >
         {currentRoundStratogems.slice(currentStratogem).map((str, idx) => (
           <div

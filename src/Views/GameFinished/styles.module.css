@@ -1,18 +1,71 @@
 .gameOverText {
   color: var(--light);
   font-weight: bolder;
-  font-size: 120px;
-  margin-bottom: 77px;
-  margin-top: 200px;
+  font-size: 50px;
+  /* Mobile-first font size */
+  margin-bottom: 70px;
+  /* Mobile-first margin-bottom */
+  margin-top: 140px;
+  /* Mobile-first margin-top */
 }
 
 .finalScoreLabel {
-  font-size: 50px;
+  font-size: 30px;
+  /* Mobile-first font size */
   color: var(--light);
 }
 
 .finalScoreValue {
-  font-size: 90px;
+  font-size: 50px;
+  /* Mobile-first font size */
   color: var(--yellow);
-  margin-top: -20px;
+  margin-top: -10px;
+  /* Mobile-first margin-top */
+}
+
+@media screen and (min-width: 541px) {
+  .gameOverText {
+    font-size: 100px;
+    /* Tablet font size */
+    margin-bottom: 50px;
+    /* Tablet margin-bottom */
+    margin-top: 200px;
+    /* Tablet margin-top */
+  }
+
+  .finalScoreLabel {
+    font-size: 40px;
+    /* Tablet font size */
+  }
+
+  .finalScoreValue {
+    font-size: 70px;
+    /* Tablet font size */
+    margin-top: -20px;
+    /* Tablet margin-top */
+  }
+
+}
+
+@media screen and (min-width: 769px) {
+  .gameOverText {
+    font-size: 120px;
+    /* Desktop font size */
+    margin-bottom: 50px;
+    /* Desktop margin-bottom */
+    margin-top: 200px;
+    /* Desktop margin-top */
+  }
+
+  .finalScoreLabel {
+    font-size: 50px;
+    /* Desktop font size */
+  }
+
+  .finalScoreValue {
+    font-size: 90px;
+    /* Desktop font size */
+    margin-top: -20px;
+    /* Desktop margin-top */
+  }
 }

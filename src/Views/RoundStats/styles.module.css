@@ -1,5 +1,5 @@
 .statsContainer {
-  width: clamp(1000px, 75vw, 2000px);
+  width: 90vw;
 }
 
 .statsRow {
@@ -8,15 +8,21 @@
 }
 
 .label {
-  font-size: 40px;
+  font-size: 25px;
+  /* Mobile-first font size */
   color: var(--light);
   font-weight: bold;
 }
 
 .value {
-  font-size: 80px;
+  font-size: 40px;
+  /* Mobile-first font size */
   color: var(--yellow);
   font-weight: bold;
+  margin-bottom: 20px;
+  /* Mobile-first margin-bottom */
+  margin-top: -8px;
+  /* Mobile-first margin-top */
 }
 
 .hidden {
@@ -43,5 +49,53 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@media screen and (min-width: 541px) {
+  .label {
+    font-size: 30px;
+    /* Tablet font size */
+  }
+
+  .value {
+    font-size: 40px;
+    /* Tablet font size */
+    margin-bottom: 30px;
+    /* Tablet margin-bottom */
+    margin-top: -5px;
+    /* Tablet margin-top */
+  }
+}
+
+@media screen and (min-width: 769px) {
+  .label {
+    font-size: 45px;
+    /* Small desktop font size */
+  }
+
+  .value {
+    font-size: 70px;
+    /* Small desktop font size */
+    margin-bottom: 30px;
+    /* Small desktop margin-bottom */
+    margin-top: -10px;
+    /* Small desktop margin-top */
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  .statsContainer {
+    width: clamp(1000px, 75vw, 2000px);
+  }
+
+  .label {
+    font-size: 40px;
+    /* Large desktop font size */
+  }
+
+  .value {
+    font-size: 80px;
+    /* Large desktop font size */
   }
 }

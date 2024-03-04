@@ -1,46 +1,45 @@
 .gameContainer {
   display: block;
-  /* This will be dynamically set in the component */
   position: relative;
+  width: 85vw;
 }
 
 .roundContainer {
   position: absolute;
-  top: -15px;
-  left: -180px;
+  top: -90px;
+  left: 0;
   right: 0;
 }
 
 .roundLabel {
-  font-size: 40px;
+  font-size: 24px;
   color: var(--light);
   font-weight: bold;
 }
 
 .roundNumber {
-  font-size: 50px;
-  margin-left: 15px;
+  font-size: 30px;
+  margin-left: 10px;
   color: var(--yellow);
   font-weight: bolder;
 }
 
 .scoreContainer {
   position: absolute;
-  top: -15px;
-  right: -180px;
+  top: -90px;
+  right: 0;
 }
 
 .scoreValue {
   text-align: right;
   font-variant-numeric: tabular-nums;
-  /* font-size will be set in the component */
+  font-size: 24px;
   color: var(--yellow);
   font-weight: bold;
 }
 
 .scoreLabel {
-  margin-top: -20px;
-  font-size: 45px;
+  font-size: 24px;
   color: var(--light);
   font-weight: bolder;
 }
@@ -48,18 +47,14 @@
 .stratogemImagesContainer {
   display: flex;
   gap: 20px;
-  width: 700px;
-  overflow-x: hidden;
+  width: 100%;
+  overflow-x: auto;
   align-items: center;
 }
 
-
-
-
-
 .stratogemImage {
-  height: 87px;
-  width: 87px;
+  height: 50px;
+  width: 50px;
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
@@ -67,7 +62,6 @@
 
 .stratogemImage:not(.active) {
   filter: opacity(0.6);
-
 }
 
 .stratogemImage img {
@@ -76,19 +70,18 @@
 }
 
 .stratogemImage.active {
-  height: 150px;
-  width: 150px;
-  padding: 15px;
+  height: 90px;
+  width: 90px;
+  padding: 10px;
 }
-
 
 .stratogemImage.active::after {
   content: '';
   position: absolute;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  top: 0px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
   background-color: transparent;
   border: 5px solid var(--yellow);
 }
@@ -96,19 +89,18 @@
 .stratogemImage.active.danger::after {
   content: '';
   position: absolute;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  top: 0px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
   background-color: transparent;
   border: 5px solid var(--danger);
 }
 
 .stratogemName {
   text-align: center;
-  /* Background color and color will be set in the component */
-  font-size: 36px;
-  padding: 0;
+  font-size: 16px;
+  padding: 5px 0;
   font-weight: bolder;
   margin-top: -5px;
   letter-spacing: 1.5px;
@@ -119,12 +111,16 @@
   justify-content: center;
   gap: 10px;
   width: 100%;
-  margin: 15px 0 60px 0;
+  margin: 15px 0 30px 0;
+}
+
+.key {
+  height: 35px;
 }
 
 .timeBarContainer {
-  width: 660px;
-  height: 30px;
+  width: 100%;
+  height: 20px;
   position: relative;
   background-color: var(--darkerlightgrey);
   margin: 0 auto;
@@ -135,5 +131,150 @@
   height: 100%;
   top: 0;
   left: 0;
-  /* Width and background color will be set in the component */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.noscrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.noscrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+
+@media screen and (min-width: 769px) and (max-width: 1080px) {
+  .gameContainer {
+    width: 70vw;
+  }
+
+  .roundContainer {
+    top: -120px;
+    left: -10px;
+  }
+
+  .roundLabel {
+    font-size: 30px;
+  }
+
+  .roundNumber {
+    font-size: 40px;
+    margin-left: 15px;
+  }
+
+  .scoreContainer {
+    top: -120px;
+    right: -10px;
+  }
+
+  .scoreValue {
+    font-size: 35px;
+  }
+
+  .scoreLabel {
+    font-size: 35px;
+  }
+
+  .stratogemImagesContainer {
+    width: 600px;
+  }
+
+  .stratogemImage {
+    height: 70px;
+    width: 70px;
+  }
+
+  .stratogemImage.active {
+    height: 120px;
+    width: 120px;
+    padding: 15px;
+  }
+
+  .stratogemName {
+    font-size: 30px;
+    padding: 0;
+  }
+
+  .keysContainer {
+    margin: 15px 0 45px 0;
+  }
+
+  .key {
+    height: 40px;
+  }
+
+  .timeBarContainer {
+    width: 80%;
+    height: 25px;
+  }
+}
+
+@media screen and (min-width: 1081px) {
+  .gameContainer {
+    width: auto;
+  }
+
+  .roundContainer {
+    top: -15px;
+    left: -180px;
+  }
+
+  .roundLabel {
+    font-size: 40px;
+  }
+
+  .roundNumber {
+    font-size: 50px;
+    margin-left: 15px;
+  }
+
+  .scoreContainer {
+    top: -15px;
+    right: -180px;
+  }
+
+  .scoreValue {
+    font-size: 45px;
+  }
+
+  .scoreLabel {
+    margin-top: -20px;
+    font-size: 45px;
+  }
+
+  .stratogemImagesContainer {
+    width: 700px;
+    overflow-x: hidden;
+  }
+
+  .stratogemImage {
+    height: 87px;
+    width: 87px;
+  }
+
+  .stratogemImage.active {
+    height: 150px;
+    width: 150px;
+    padding: 15px;
+  }
+
+  .stratogemName {
+    font-size: 36px;
+    padding: 0;
+  }
+
+  .keysContainer {
+    margin: 15px 0 60px 0;
+  }
+
+  .key {
+    height: 50px;
+  }
+
+  .timeBarContainer {
+    width: 660px;
+    height: 30px;
+  }
 }

@@ -1,0 +1,10 @@
+.miscContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

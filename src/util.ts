@@ -15,11 +15,4 @@ const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
 const waitForTimeout = (timeout: number) =>
   new Promise((resolve) => setTimeout(resolve, timeout));
 
-const getFontBasedOnLength = (num: number) => {
-  if (num < 1000) return 60;
-  if (num < 10000) return 50;
-  if (num < 100000) return 45;
-  if (num < 1000000) return 35;
-};
-
-export { shuffleStratogems, waitForTimeout, getFontBasedOnLength };
+export { shuffleStratogems, waitForTimeout };

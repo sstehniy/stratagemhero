@@ -1,0 +1,55 @@
+.overlayContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.content {
+  text-align: justify;
+  padding: 20px;
+  border: 3px solid var(--lightgrey);
+  width: 30vw;
+  border-radius: 10px;
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.link {
+  text-decoration: none;
+  color: var(--yellow);
+  display: inline-block;
+}
+
+.overlayButton {
+  padding: 7px;
+  border: 3px solid var(--light);
+  border-radius: 10px;
+  background-color: var(--grey);
+  color: var(--light);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlayButton:hover {
+  background-color: var(--light);
+  color: var(--dark);
+}
+
+@media (max-width: 768px) {
+  .content {
+    width: 80vw;
+  }
+}
