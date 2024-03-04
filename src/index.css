@@ -4,6 +4,11 @@
   padding: 0;
 }
 
+html,
+body {
+  overscroll-behavior-x: none;
+}
+
 body {
   font-family: "Kode Mono", monospace;
   font-optical-sizing: auto;

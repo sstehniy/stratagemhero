@@ -23,6 +23,12 @@ import { GameFinished } from "./Views/GameFinished";
 import { shuffleStratogems, waitForTimeout } from "./util";
 import { Game } from "./Views/Game";
 import { Misc } from "./components/Misc";
+import { useSwipeable } from "react-swipeable";
+
+const triggerKeydownEvent = (key: string) => {
+  const event = new KeyboardEvent("keydown", { key });
+  window.dispatchEvent(event);
+};
 
 function App() {
   const [totalScore, setTotalScore] = useState(0);
@@ -39,7 +45,41 @@ function App() {
   const [timeLeftForRound, setTimeLeftForRound] = useState(BASE_ROUND_DURATION);
   const [currentStratogemKeyIndex, setCurrentStratogemKeyIndex] = useState(0);
   const [wrongKeyPressed, setWrongKeyPressed] = useState(false);
+  const handlers = useSwipeable({
+    delta: 100,
+    onSwipedDown: () => {
+      if (gameStatus === GameStatus.NONE) {
+        handleStartGame();
+      } else if (gameStatus === GameStatus.STARTED) {
+        triggerKeydownEvent("s");
+      }
+    },
+    onSwipedLeft: () => {
+      if (gameStatus === GameStatus.NONE) {
+        handleStartGame();
+      } else if (gameStatus === GameStatus.STARTED) {
+        triggerKeydownEvent("a");
+      }
+    },
+    onSwipedRight: () => {
+      if (gameStatus === GameStatus.NONE) {
+        handleStartGame();
+      } else if (gameStatus === GameStatus.STARTED) {
+        triggerKeydownEvent("d");
+      }
+    },
+    onSwipedUp: () => {
+      if (gameStatus === GameStatus.NONE) {
+        handleStartGame();
+      } else if (gameStatus === GameStatus.STARTED) {
+        triggerKeydownEvent("w");
+      }
+    },
+  });
   const intervalRef = useRef<number | null>(null);
+  const isMobile = useRef(
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
+  );
 
   const handleStartGame = useCallback(() => {
     setWrongKeyPressed(false);
@@ -223,36 +263,44 @@ function App() {
   ]);
 
   return (
-    <div className={styles.mainContainer}>
+    <div
+      {...handlers}
+      style={{ height: "100vh", display: "flex", alignItems: "center" }}
+    >
       <Misc />
-      {gameStatus === GameStatus.GET_READY && <GetReady round={round} />}
-      {gameStatus === GameStatus.NONE && <StartScreen />}
-      {gameStatus === GameStatus.ROUND_ENDED && (
-        <RoundStats
-          currentRoundBaseBonus={currentRoundBaseBonus}
-          currentRoundTimeBonus={currentRoundTimeBonus}
-          isPerfectRound={isPerfectRound}
-          totalScore={totalScore}
-        />
-      )}
-      {gameStatus === GameStatus.FINISHED && (
-        <GameFinished totalScore={totalScore} />
-      )}
-      {(gameStatus === GameStatus.STARTED ||
-        gameStatus === GameStatus.BETWEEN_STRATOGEMS ||
-        gameStatus === GameStatus.GET_READY) && (
-        <Game
-          currentRoundScore={currentRoundScore}
-          timeLeftForRound={timeLeftForRound}
-          currentStratogemKeyIndex={currentStratogemKeyIndex}
-          wrongKeyPressed={wrongKeyPressed}
-          currentRoundStratogems={currentRoundStratogems}
-          gameStatus={gameStatus}
-          round={round}
-          totalScore={totalScore}
-          currentStratogem={currentStratogem}
-        />
-      )}
+
+      <div className={styles.mainContainer}>
+        {gameStatus === GameStatus.GET_READY && <GetReady round={round} />}
+        {gameStatus === GameStatus.NONE && (
+          <StartScreen isMobile={isMobile.current} />
+        )}
+        {gameStatus === GameStatus.ROUND_ENDED && (
+          <RoundStats
+            currentRoundBaseBonus={currentRoundBaseBonus}
+            currentRoundTimeBonus={currentRoundTimeBonus}
+            isPerfectRound={isPerfectRound}
+            totalScore={totalScore}
+          />
+        )}
+        {gameStatus === GameStatus.FINISHED && (
+          <GameFinished totalScore={totalScore} />
+        )}
+        {(gameStatus === GameStatus.STARTED ||
+          gameStatus === GameStatus.BETWEEN_STRATOGEMS ||
+          gameStatus === GameStatus.GET_READY) && (
+          <Game
+            currentRoundScore={currentRoundScore}
+            timeLeftForRound={timeLeftForRound}
+            currentStratogemKeyIndex={currentStratogemKeyIndex}
+            wrongKeyPressed={wrongKeyPressed}
+            currentRoundStratogems={currentRoundStratogems}
+            gameStatus={gameStatus}
+            round={round}
+            totalScore={totalScore}
+            currentStratogem={currentStratogem}
+          />
+        )}
+      </div>
     </div>
   );
 }
