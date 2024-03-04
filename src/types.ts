@@ -11,3 +11,12 @@ export type Stratogem = {
   keys: Key[];
   keyCount: number;
 };
+
+export enum GameStatus {
+  NONE,
+  STARTED,
+  FINISHED,
+  ROUND_ENDED,
+  BETWEEN_STRATOGEMS,
+  GET_READY,
+}

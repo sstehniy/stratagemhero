@@ -1,52 +1,25 @@
-import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
-import { stratogems } from "./config";
+import { useCallback, useEffect, useRef, useState } from "react";
+
 import "./App.css";
-import { Key, Stratogem } from "./types";
-import { v4 } from "uuid";
+import { GameStatus, Key, Stratogem } from "./types";
 
-import ArrowUp from "./assets/keys/arrow_up.svg?react";
-import ArrowDown from "./assets/keys/arrow_down.svg?react";
-import ArrowLeft from "./assets/keys/arrow_left.svg?react";
-import ArrowRight from "./assets/keys/arrow_right.svg?react";
-
-const BASE_ROUND_BONUS = 75;
-const BASE_STRATOGEM_COUNT = 6;
-const BASE_ROUND_DURATION = 1000 * 10; // 10 seconds
-const STRATOGEM_COMPLETION_BONUS_PER_KEY = 86; // 86 ms per key
-const TIME_BETWEEN_ROUNDS = 300; // 300 ms
-const PERFECT_ROUND_BONUS = 100;
-const FOLLOWING_ROUND_BONUS_ADDITION = 25;
-const SHOW_ROUND_STATS_DURATION = 5000;
-const CRITICAL_TIME_LEFT = 2000;
-
-const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
-  const shuffled: (Stratogem & { uid: string })[] = [];
-  for (let i = 0; i < count; i++) {
-    const randomIndex = Math.floor(Math.random() * stratogems.length);
-    const stratogem = { ...stratogems[randomIndex], uid: v4() };
-    shuffled.push(stratogem);
-  }
-  return shuffled;
-};
-
-const waitForTimeout = (timeout: number) =>
-  new Promise((resolve) => setTimeout(resolve, timeout));
-
-const getFontBasedOnLength = (num: number) => {
-  if (num < 1000) return 60;
-  if (num < 10000) return 50;
-  if (num < 100000) return 45;
-  if (num < 1000000) return 35;
-};
-
-enum GameStatus {
-  NONE,
-  STARTED,
-  FINISHED,
-  ROUND_ENDED,
-  BETWEEN_STRATOGEMS,
-  GET_READY,
-}
+import { GetReady } from "./Views/GetReady";
+import { StartScreen } from "./Views/StartScreen";
+import {
+  BASE_ROUND_BONUS,
+  BASE_ROUND_DURATION,
+  BASE_STRATOGEM_COUNT,
+  FOLLOWING_ROUND_BONUS_ADDITION,
+  PERFECT_ROUND_BONUS,
+  SHOW_ROUND_STATS_DURATION,
+  STRATOGEM_COMPLETION_BONUS_PER_KEY,
+  TIME_BETWEEN_ROUNDS,
+} from "./constants";
+import { RoundStats } from "./Views/RoundStats";
+import { GameFinished } from "./Views/GameFinished";
+import { shuffleStratogems, waitForTimeout } from "./util";
+import { Game } from "./Views/Game";
+import { Footer } from "./components/Footer";
 
 function App() {
   const [totalScore, setTotalScore] = useState(0);
@@ -246,89 +219,8 @@ function App() {
     handleStartGameKeyPress,
   ]);
 
-  const renderKey = (key: Key, idx: number) => {
-    let style: CSSProperties = {
-      fill: "var(--lightgrey)",
-    };
-    if (idx < currentStratogemKeyIndex) {
-      style = {
-        fill: "var(--yellow)",
-      };
-    }
-    if (gameStatus === GameStatus.BETWEEN_STRATOGEMS) {
-      style = {
-        fill: "var(--yellow)",
-      };
-    }
-    if (wrongKeyPressed && idx < currentStratogemKeyIndex) {
-      style = {
-        fill: "var(--danger)",
-      };
-    }
-
-    const mergedStyles = {
-      ...style,
-      height: 50,
-      width: "auto",
-      transition: "all 0.1s ease",
-    };
-    switch (key) {
-      case Key.UP:
-        return <ArrowUp style={mergedStyles} key={idx} />;
-      case Key.DOWN:
-        return <ArrowDown style={mergedStyles} key={idx} />;
-      case Key.LEFT:
-        return <ArrowLeft style={mergedStyles} key={idx} />;
-      case Key.RIGHT:
-        return <ArrowRight style={mergedStyles} key={idx} />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="main-container">
-      <div
-        style={{
-          position: "fixed",
-          bottom: 5,
-          left: 5,
-          fontSize: 12,
-          color: "var(--lightgrey)",
-          width: 400,
-        }}
-      >
-        <p>
-          Check out Helldivers 2 on{" "}
-          <a
-            href="https://store.steampowered.com/app/553850/HELLDIVERS_2/"
-            target="_blank"
-          >
-            Steam
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://www.playstation.com/en-us/games/helldivers-2/"
-            target="_blank"
-          >
-            Playstation
-          </a>
-          !<br />
-        </p>
-        Report an issue{" "}
-        <a
-          href="https://github.com/sstehniy/stratagemhero/issues"
-          target="_blank"
-        >
-          here
-        </a>
-        <br />
-        Not affiliated with Helldivers, Arrowhead Studios, or Playstation
-        Studios.
-        <br />
-        This project is just a fan-made game to practice skills for spreading
-        democrary across the universe. Not for profit!!!
-      </div>
       <div style={{ position: "fixed", top: 10, right: 10 }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -347,380 +239,35 @@ function App() {
           />
         </svg>
       </div>
-      {gameStatus === GameStatus.GET_READY && (
-        <>
-          <div
-            style={{
-              color: "var(--light)",
-              fontWeight: "bolder",
-              fontSize: 120,
-              marginBottom: 77,
-              marginTop: 200,
-            }}
-          >
-            GET READY
-          </div>
-          <h5
-            style={{
-              fontSize: 50,
-              color: "var(--light)",
-            }}
-          >
-            Round
-          </h5>
-          <h5
-            style={{
-              fontSize: 90,
-              color: "var(--yellow)",
-            }}
-          >
-            {round}
-          </h5>
-        </>
-      )}
-      {gameStatus === GameStatus.NONE && (
-        <>
-          <h1
-            style={{
-              color: "var(--light)",
-              fontSize: 120,
-              marginBottom: 100,
-              marginTop: 125,
-              fontWeight: "bolder",
-            }}
-          >
-            STRATAGEM HERO
-          </h1>
-          <h5 style={{ color: "var(--yellow)", fontSize: 50 }}>
-            Input any Stratagem Input to Start!
-          </h5>
-          <div
-            style={{ display: "flex", gap: 10, position: "fixed", bottom: 40 }}
-          >
-            <div
-              style={{
-                fontSize: 20,
-                backgroundColor: "var(--yellow)",
-                padding: "8px 15px",
-                borderRadius: 7,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              w
-            </div>
-            <div
-              style={{
-                fontSize: 20,
-                backgroundColor: "var(--yellow)",
-                padding: "8px 15px",
-                borderRadius: 7,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              a
-            </div>
-            <div
-              style={{
-                fontSize: 20,
-                backgroundColor: "var(--yellow)",
-                padding: "8px 15px",
-                borderRadius: 7,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              s
-            </div>
-            <div
-              style={{
-                fontSize: 20,
-                backgroundColor: "var(--yellow)",
-                padding: "8px 15px",
-                borderRadius: 7,
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              d
-            </div>
-          </div>
-        </>
-      )}
+      {gameStatus === GameStatus.GET_READY && <GetReady round={round} />}
+      {gameStatus === GameStatus.NONE && <StartScreen />}
       {gameStatus === GameStatus.ROUND_ENDED && (
-        <div style={{ width: "clamp(1000px,75vw, 2000px)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span
-              style={{
-                fontSize: 40,
-                color: "var(--light)",
-                fontWeight: "bold",
-              }}
-            >
-              Round Bonus
-            </span>
-            <span
-              style={{
-                fontSize: 80,
-                color: "var(--yellow)",
-                fontWeight: "bold",
-              }}
-            >
-              {currentRoundBaseBonus}
-            </span>
-          </div>
-          <div
-            style={{ display: "flex", justifyContent: "space-between" }}
-            className="hidden first"
-          >
-            <span
-              style={{
-                fontSize: 40,
-                color: "var(--light)",
-                fontWeight: "bold",
-              }}
-            >
-              Time Bonus
-            </span>
-            <span
-              style={{
-                fontSize: 80,
-                color: "var(--yellow)",
-                fontWeight: "bold",
-              }}
-            >
-              {currentRoundTimeBonus}
-            </span>
-          </div>
-          <div
-            style={{ display: "flex", justifyContent: "space-between" }}
-            className="hidden second"
-          >
-            <span
-              style={{
-                fontSize: 40,
-                color: "var(--light)",
-                fontWeight: "bold",
-              }}
-            >
-              Pefect Bonus
-            </span>
-            <span
-              style={{
-                fontSize: 80,
-                color: "var(--yellow)",
-                fontWeight: "bold",
-              }}
-            >
-              {isPerfectRound ? PERFECT_ROUND_BONUS : 0}
-            </span>
-          </div>
-          <div
-            style={{ display: "flex", justifyContent: "space-between" }}
-            className="hidden third"
-          >
-            <span
-              style={{
-                fontSize: 40,
-                color: "var(--light)",
-                fontWeight: "bold",
-              }}
-            >
-              Total Score
-            </span>
-            <span
-              style={{
-                fontSize: 80,
-                color: "var(--yellow)",
-                fontWeight: "bold",
-              }}
-            >
-              {totalScore}
-            </span>
-          </div>
-        </div>
+        <RoundStats
+          currentRoundBaseBonus={currentRoundBaseBonus}
+          currentRoundTimeBonus={currentRoundTimeBonus}
+          isPerfectRound={isPerfectRound}
+          totalScore={totalScore}
+        />
       )}
       {gameStatus === GameStatus.FINISHED && (
-        <>
-          <div
-            style={{
-              color: "var(--light)",
-              fontWeight: "bolder",
-              fontSize: 120,
-              marginBottom: 77,
-              marginTop: 200,
-            }}
-          >
-            GAME OVER
-          </div>
-          <h5
-            style={{
-              fontSize: 50,
-              color: "var(--light)",
-            }}
-          >
-            YOUR FINAL SCORE
-          </h5>
-          <h5
-            style={{
-              fontSize: 90,
-              color: "var(--yellow)",
-              marginTop: -20,
-            }}
-          >
-            {totalScore}
-          </h5>
-        </>
+        <GameFinished totalScore={totalScore} />
       )}
       {(gameStatus === GameStatus.STARTED ||
         gameStatus === GameStatus.BETWEEN_STRATOGEMS ||
         gameStatus === GameStatus.GET_READY) && (
-        <div
-          style={{
-            display: gameStatus === GameStatus.GET_READY ? "none" : "block",
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: -15,
-              left: -180,
-              right: 0,
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontSize: 40,
-                  color: "var(--light)",
-                  fontWeight: "bold",
-                }}
-              >
-                Round
-              </div>
-              <div
-                style={{
-                  fontSize: 50,
-                  marginLeft: 15,
-                  color: "var(--yellow)",
-                  fontWeight: "bolder",
-                }}
-              >
-                {round}
-              </div>
-            </div>
-          </div>
-          <div
-            style={{
-              position: "absolute",
-              top: -15,
-              right: -180,
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  textAlign: "right",
-                  fontVariantNumeric: "tabular-nums",
-                  fontSize: getFontBasedOnLength(
-                    totalScore + currentRoundScore,
-                  ),
-                  color: "var(--yellow)",
-                  fontWeight: "bold",
-                }}
-              >
-                {totalScore + currentRoundScore}
-              </div>
-              <div
-                style={{
-                  marginTop: -20,
-                  fontSize: 45,
-                  color: "var(--light)",
-                  fontWeight: "bolder",
-                }}
-              >
-                SCORE
-              </div>
-            </div>
-          </div>
-          <div className="stratogem-images-container">
-            {currentRoundStratogems.slice(currentStratogem).map((str, idx) => (
-              <div
-                className={`stratogem-image ${idx === 0 ? "active" : ""} ${
-                  timeLeftForRound <= CRITICAL_TIME_LEFT ? "danger" : ""
-                }`}
-                key={str.uid}
-              >
-                <img
-                  src={str.image}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-          <div
-            style={{
-              textAlign: "center",
-              backgroundColor:
-                timeLeftForRound <= CRITICAL_TIME_LEFT
-                  ? "var(--danger)"
-                  : "var(--yellow)",
-              fontSize: 36,
-              padding: 0,
-              fontWeight: "bolder",
-              color:
-                timeLeftForRound <= CRITICAL_TIME_LEFT
-                  ? "var(--light)"
-                  : "var(--dark)",
-              marginTop: -5,
-              letterSpacing: 1.5,
-            }}
-          >
-            {currentRoundStratogems[currentStratogem].name.toUpperCase()}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 10,
-              width: "100%",
-              margin: "15px 0px 60px 0px",
-            }}
-          >
-            {currentRoundStratogems[currentStratogem].keys.map((key, idx) =>
-              renderKey(key, idx),
-            )}
-          </div>
-          <div
-            style={{
-              width: 660,
-              height: 30,
-              position: "relative",
-              backgroundColor: "var(--darkerlightgrey)",
-              margin: "0 auto",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                height: "100%",
-                top: 0,
-                left: 0,
-                width: `${(timeLeftForRound / BASE_ROUND_DURATION) * 100}%`,
-                backgroundColor:
-                  timeLeftForRound <= CRITICAL_TIME_LEFT
-                    ? "var(--danger)"
-                    : "var(--yellow)",
-              }}
-            ></div>
-          </div>
-        </div>
+        <Game
+          currentRoundScore={currentRoundScore}
+          timeLeftForRound={timeLeftForRound}
+          currentStratogemKeyIndex={currentStratogemKeyIndex}
+          wrongKeyPressed={wrongKeyPressed}
+          currentRoundStratogems={currentRoundStratogems}
+          gameStatus={gameStatus}
+          round={round}
+          totalScore={totalScore}
+          currentStratogem={currentStratogem}
+        />
       )}
+      <Footer />
     </div>
   );
 }
