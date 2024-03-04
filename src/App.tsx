@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import "./App.css";
-import { GameStatus, Key, Stratogem } from "./types";
+import styles from "./App.module.css";
+import { GameStatus, Stratogem } from "./types";
 
 import { GetReady } from "./Views/GetReady";
 import { StartScreen } from "./Views/StartScreen";
@@ -220,7 +220,7 @@ function App() {
   ]);
 
   return (
-    <div className="main-container">
+    <div className={styles.mainContainer}>
       <div style={{ position: "fixed", top: 10, right: 10 }}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

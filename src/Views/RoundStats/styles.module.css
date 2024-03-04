@@ -1,0 +1,47 @@
+.statsContainer {
+  width: clamp(1000px, 75vw, 2000px);
+}
+
+.statsRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.label {
+  font-size: 40px;
+  color: var(--light);
+  font-weight: bold;
+}
+
+.value {
+  font-size: 80px;
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.hidden {
+  opacity: 0;
+  animation: appear 0.1s linear forwards;
+}
+
+.hidden.first {
+  animation-delay: 0.5s;
+}
+
+.hidden.second {
+  animation-delay: 1.5s;
+}
+
+.hidden.third {
+  animation-delay: 2.5s;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}

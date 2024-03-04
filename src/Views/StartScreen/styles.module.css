@@ -1,0 +1,28 @@
+.title {
+  color: var(--light);
+  font-size: 120px;
+  margin-bottom: 100px;
+  margin-top: 125px;
+  font-weight: bolder;
+}
+
+.subtitle {
+  color: var(--yellow);
+  font-size: 50px;
+}
+
+.controlsContainer {
+  display: flex;
+  gap: 10px;
+  position: fixed;
+  bottom: 40px;
+}
+
+.control {
+  font-size: 20px;
+  background-color: var(--yellow);
+  padding: 8px 15px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: bold;
+}

@@ -1,0 +1,18 @@
+.gameOverText {
+  color: var(--light);
+  font-weight: bolder;
+  font-size: 120px;
+  margin-bottom: 77px;
+  margin-top: 200px;
+}
+
+.finalScoreLabel {
+  font-size: 50px;
+  color: var(--light);
+}
+
+.finalScoreValue {
+  font-size: 90px;
+  color: var(--yellow);
+  margin-top: -20px;
+}

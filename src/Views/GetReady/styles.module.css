@@ -1,0 +1,17 @@
+.getReadyText {
+  color: var(--light);
+  font-weight: bolder;
+  font-size: 120px;
+  margin-bottom: 77px;
+  margin-top: 200px;
+}
+
+.roundLabel {
+  font-size: 50px;
+  color: var(--light);
+}
+
+.roundNumber {
+  font-size: 90px;
+  color: var(--yellow);
+}
