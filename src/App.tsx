@@ -46,7 +46,7 @@ function App() {
   const [currentStratogemKeyIndex, setCurrentStratogemKeyIndex] = useState(0);
   const [wrongKeyPressed, setWrongKeyPressed] = useState(false);
   const handlers = useSwipeable({
-    delta: 100,
+    delta: 50,
     onSwipedDown: () => {
       if (gameStatus === GameStatus.NONE) {
         handleStartGame();
@@ -265,7 +265,7 @@ function App() {
   return (
     <div
       {...handlers}
-      style={{ height: "100vh", display: "flex", alignItems: "center" }}
+      style={{ height: "100svh", display: "flex", alignItems: "center" }}
     >
       <Misc />
 

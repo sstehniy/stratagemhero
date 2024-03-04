@@ -7,6 +7,8 @@
 html,
 body {
   overscroll-behavior-x: none;
+  overflow: hidden;
+  position: fixed;
 }
 
 body {
@@ -16,7 +18,7 @@ body {
 }
 
 #root {
-  height: 100vh;
+  height: 100svh;
   width: 100vw;
   overflow: hidden;
   display: flex;
