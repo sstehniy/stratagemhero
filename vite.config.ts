@@ -9,11 +9,8 @@ export default defineConfig({
     svgr(),
     react(),
     VitePWA({
-      registerType: "autoUpdate",
-      devOptions: {
-        enabled: true,
-      },
-      includeAssets: ["**/*", "src/assets/*"],
+      registerType: "prompt",
+      includeAssets: ["**/*"],
       manifest: {
         background_color: "#1B1E22",
         theme_color: "#1B1E22",
@@ -34,6 +31,9 @@ export default defineConfig({
           },
         ],
         orientation: "portrait",
+      },
+      workbox: {
+        globPatterns: ["**/*"],
       },
     }),
   ],
