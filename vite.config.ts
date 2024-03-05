@@ -13,7 +13,7 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      includeAssets: ["**/*"],
+      includeAssets: ["**/*", "src/assets/*"],
       manifest: {
         background_color: "#1B1E22",
         theme_color: "#1B1E22",
@@ -21,7 +21,6 @@ export default defineConfig({
         name: "Stratagem Hero",
         short_name: "Stratagem Hero",
         start_url: "/",
-
         icons: [
           {
             src: "/apple-touch-icon-180x180.png",
