@@ -9,6 +9,7 @@ body {
   overscroll-behavior-x: none;
   overflow: hidden;
   position: fixed;
+  background-color: var(--dark);
 }
 
 body {
