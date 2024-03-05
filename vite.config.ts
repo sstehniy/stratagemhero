@@ -12,6 +12,10 @@ export default defineConfig({
       registerType: "autoUpdate",
       injectRegister: "auto",
       includeAssets: ["**/*"],
+      devOptions: {
+        enabled: true,
+        type: "module",
+      },
       manifest: {
         background_color: "#1B1E22",
         theme_color: "#1B1E22",

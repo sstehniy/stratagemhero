@@ -120,9 +120,7 @@ export const Game = ({
               : "var(--yellow)",
 
           color:
-            timeLeftForRound <= CRITICAL_TIME_LEFT
-              ? "var(--light)"
-              : "var(--dark)",
+            timeLeftForRound <= CRITICAL_TIME_LEFT ? "white" : "var(--dark)",
         }}
       >
         {currentRoundStratogems[currentStratogem].name.toUpperCase()}
