@@ -152,7 +152,6 @@ function App() {
           } else {
             // move to next stratogem in current round
             const roundScore = currentStratogemObject.keyCount * 5;
-            setCurrentRoundScore((prev) => prev + roundScore);
 
             // add bonus time to current round
             setTimeLeftForRound(
@@ -163,6 +162,7 @@ function App() {
             );
             setGameStatus(GameStatus.BETWEEN_STRATOGEMS);
             await waitForTimeout(TIME_BETWEEN_ROUNDS);
+            setCurrentRoundScore((prev) => prev + roundScore);
             setCurrentStratogemKeyIndex(0);
             setCurrentStratogem(currentStratogem + 1);
             setGameStatus(GameStatus.STARTED);
@@ -171,8 +171,10 @@ function App() {
           setCurrentStratogemKeyIndex((prev) => prev + 1);
         }
       } else if (["w", "a", "s", "d"].includes(e.key)) {
+        window.removeEventListener("keydown", handleKeyStroke);
         setWrongKeyPressed(true);
         setIsPerfectRound(false);
+        window.addEventListener("keydown", handleKeyStroke);
         await waitForTimeout(100);
         setCurrentStratogemKeyIndex(0);
         setWrongKeyPressed(false);
