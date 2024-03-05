@@ -15,7 +15,7 @@
   display: flex;
   gap: 10px;
   position: fixed;
-  bottom: 20px;
+  bottom: 40px;
   color: var(--light);
 }
 
@@ -40,9 +40,6 @@
     font-size: 30px;
   }
 
-  .controlsContainer {
-    bottom: 30px;
-  }
 
   .control {
     font-size: 18px;
@@ -62,9 +59,6 @@
     font-size: 50px;
   }
 
-  .controlsContainer {
-    bottom: 40px;
-  }
 
   .control {
     font-size: 20px;
