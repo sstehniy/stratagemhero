@@ -9,7 +9,8 @@ export default defineConfig({
     svgr(),
     react(),
     VitePWA({
-      registerType: "prompt",
+      registerType: "autoUpdate",
+      injectRegister: "auto",
       includeAssets: ["**/*"],
       manifest: {
         background_color: "#1B1E22",
