@@ -13,7 +13,7 @@ export default defineConfig({
       devOptions: {
         enabled: true,
       },
-      includeAssets: ["src/assets/*", "public/*"],
+      includeAssets: ["**/*"],
       manifest: {
         background_color: "#1B1E22",
         theme_color: "#1B1E22",
