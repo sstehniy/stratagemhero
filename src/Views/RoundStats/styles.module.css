@@ -27,19 +27,19 @@
 
 .hidden {
   opacity: 0;
-  animation: appear 0.1s linear forwards;
+  animation: appear 0.150s linear forwards;
 }
 
 .hidden.first {
-  animation-delay: 0.5s;
+  animation-delay: 0s;
 }
 
 .hidden.second {
-  animation-delay: 1.5s;
+  animation-delay: 0.6s;
 }
 
 .hidden.third {
-  animation-delay: 2.5s;
+  animation-delay: 1.2s;
 }
 
 @keyframes appear {
