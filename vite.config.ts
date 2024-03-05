@@ -9,7 +9,7 @@ export default defineConfig({
     svgr(),
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       injectRegister: "auto",
       includeAssets: ["**/*"],
       devOptions: {

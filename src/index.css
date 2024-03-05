@@ -44,3 +44,16 @@ body {
   --grey: #36383e;
   --danger: #FF7E4B
 }
+
+.toast {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--danger);
+  color: var(--light);
+  font-size: 1rem;
+  font-weight: 600;
+  z-index: 100;
+}
