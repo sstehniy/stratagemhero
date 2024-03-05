@@ -30,12 +30,16 @@
 }
 
 .overlayButton {
-  padding: 7px 10px;
+  width: 46px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 3px solid var(--light);
   border-radius: 10px;
   background-color: var(--grey);
   color: var(--light);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
