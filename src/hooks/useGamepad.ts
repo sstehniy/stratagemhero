@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { triggerKeydownEvent } from "../util";
+import { toast } from "react-toastify";
 
 const buttonMap = { 12: "w", 13: "s", 14: "a", 15: "d" };
 
@@ -33,11 +34,12 @@ export const useGamepadInput = () => {
 
   useEffect(() => {
     const handleGamepadConnected = (e: GamepadEvent) => {
-      console.log(
-        `Gamepad connected at index ${e.gamepad.index}: ${e.gamepad.id}. ${e.gamepad.buttons.length} buttons, ${e.gamepad.axes.length} axes.`,
-      );
       if (e.gamepad.axes.length === 4) {
         setGamepad(e.gamepad);
+        console.log(
+          `Gamepad connected at index ${e.gamepad.index}: ${e.gamepad.id}. ${e.gamepad.buttons.length} buttons, ${e.gamepad.axes.length} axes.`,
+        );
+        toast("Gamepad connected!");
       }
     };
 
@@ -47,6 +49,7 @@ export const useGamepadInput = () => {
       );
       if (gamepad && e.gamepad.index === gamepad.index) {
         setGamepad(null);
+        toast("Gamepad disconnected!");
       }
     };
 
