@@ -125,7 +125,7 @@ export const stratagems: Stratagem[] = [
   {
     name: "EAT-17 Expendable Anti-tank",
     keys: [Key.DOWN, Key.DOWN, Key.LEFT, Key.UP, Key.DOWN],
-    keyCount: 6,
+    keyCount: 5,
     image: EAT_17_Expendable_Anti_tank,
   },
   {
