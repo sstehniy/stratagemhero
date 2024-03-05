@@ -1,0 +1,20 @@
+.toggleButton {
+  padding: 7px 10px;
+  border: 3px solid var(--light);
+  border-radius: 10px;
+  background-color: var(--grey);
+  color: var(--light);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toggleButton:hover {
+  background-color: var(--light);
+  color: var(--dark);
+}

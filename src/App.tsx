@@ -36,6 +36,12 @@ import { useSwipeable } from "react-swipeable";
 import { useGamepadInput } from "./hooks/useGamepad";
 import { useSound } from "./hooks/useSound";
 
+const playSound = (allowed: boolean, sound: () => void) => {
+  if (allowed) {
+    sound();
+  }
+};
+
 function App() {
   const [totalScore, setTotalScore] = useState(0);
   const [currentRoundScore, setCurrentRoundScore] = useState(0);
@@ -51,6 +57,7 @@ function App() {
   const [timeLeftForRound, setTimeLeftForRound] = useState(BASE_ROUND_DURATION);
   const [currentStratagemKeyIndex, setCurrentStratagemKeyIndex] = useState(0);
   const [wrongKeyPressed, setWrongKeyPressed] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(true);
   const [playStartGameSound] = useSound(introAudio, {
     loop: false,
     interrupt: true,
@@ -134,7 +141,7 @@ function App() {
   useGamepadInput();
 
   const handleStartGame = useCallback(() => {
-    playStartGameSound();
+    playSound(audioEnabled, playStartGameSound);
     setWrongKeyPressed(false);
     setRound(1);
     const roundStratagems = shuffleStratagems(
@@ -147,7 +154,7 @@ function App() {
     setCurrentStratagem(0);
     setCurrentStratagemKeyIndex(0);
     setGameStatus(GameStatus.GET_READY);
-  }, [playStartGameSound, round]);
+  }, [audioEnabled, playStartGameSound, round]);
 
   const updateScoreOnRoundCompletion = useCallback(() => {
     //calculate total score
@@ -163,7 +170,7 @@ function App() {
   }, [currentRoundScore, isPerfectRound, round, timeLeftForRound]);
 
   const startNextRound = useCallback(() => {
-    playGetReadySound();
+    playSound(audioEnabled, playGetReadySound);
     setRound((prev) => prev + 1);
     setCurrentRoundScore(0);
     setCurrentRoundStratagems(shuffleStratagems(BASE_STRATAGEM_COUNT + round));
@@ -172,7 +179,7 @@ function App() {
     setCurrentStratagemKeyIndex(0);
     setTimeLeftForRound(BASE_ROUND_DURATION);
     setGameStatus(GameStatus.GET_READY);
-  }, [playGetReadySound, round]);
+  }, [audioEnabled, playGetReadySound, round]);
 
   const handleKeyStroke = useCallback(
     async (e: KeyboardEvent) => {
@@ -198,7 +205,7 @@ function App() {
                   STRATAGEM_COMPLETION_BONUS_PER_KEY,
             );
             setGameStatus(GameStatus.BETWEEN_STRATAGEMS);
-            playRoundStatsSound();
+            playSound(audioEnabled, playRoundStatsSound);
             await waitForTimeout(TIME_BETWEEN_ROUNDS);
             updateScoreOnRoundCompletion();
             setGameStatus(GameStatus.ROUND_ENDED);
@@ -217,7 +224,7 @@ function App() {
                 currentStratagemObject.keyCount *
                   STRATAGEM_COMPLETION_BONUS_PER_KEY,
             );
-            playStratagemCompletionSound();
+            playSound(audioEnabled, playStratagemCompletionSound);
             setGameStatus(GameStatus.BETWEEN_STRATAGEMS);
             await waitForTimeout(TIME_BETWEEN_ROUNDS);
             setCurrentRoundScore((prev) => prev + roundScore);
@@ -226,11 +233,11 @@ function App() {
             setGameStatus(GameStatus.STARTED);
           }
         } else {
-          playClick();
+          playSound(audioEnabled, playClick);
           setCurrentStratagemKeyIndex((prev) => prev + 1);
         }
       } else if (["w", "a", "s", "d"].includes(e.key)) {
-        playStratagemErrorSound();
+        playSound(audioEnabled, playStratagemErrorSound);
         window.removeEventListener("keydown", handleKeyStroke);
         setWrongKeyPressed(true);
         setIsPerfectRound(false);
@@ -244,10 +251,10 @@ function App() {
       currentRoundStratagems,
       currentStratagem,
       currentStratagemKeyIndex,
-      playRoundStatsSound,
+      audioEnabled,
+      playStratagemCompletionSound,
       updateScoreOnRoundCompletion,
       startNextRound,
-      playStratagemCompletionSound,
       playClick,
       playStratagemErrorSound,
     ],
@@ -255,17 +262,24 @@ function App() {
 
   useEffect(() => {
     if (
-      gameStatus !== GameStatus.STARTED &&
-      gameStatus !== GameStatus.BETWEEN_STRATAGEMS
+      (gameStatus !== GameStatus.STARTED &&
+        gameStatus !== GameStatus.BETWEEN_STRATAGEMS) ||
+      !audioEnabled
     ) {
       stopGameSound();
       return;
     }
 
     if (!isGameSoundPlaying) {
-      playGameSound();
+      playSound(audioEnabled, playGameSound);
     }
-  }, [gameStatus, isGameSoundPlaying, playGameSound, stopGameSound]);
+  }, [
+    audioEnabled,
+    gameStatus,
+    isGameSoundPlaying,
+    playGameSound,
+    stopGameSound,
+  ]);
 
   const handleStartGameKeyPress = useCallback(
     (e: KeyboardEvent) => {
@@ -317,7 +331,7 @@ function App() {
           setTimeLeftForRound((prev) => {
             const newTime = prev - Math.min(prev, TIME_INTERVAL_DECREMENT);
             if (newTime === 0) {
-              playGameEndedSound();
+              playSound(audioEnabled, playGameEndedSound);
               setGameStatus(GameStatus.FINISHED);
             }
             return newTime;
@@ -333,6 +347,7 @@ function App() {
       window.removeEventListener("keydown", handleStartGameKeyPress);
     };
   }, [
+    audioEnabled,
     currentRoundStratagems,
     currentStratagem,
     currentStratagemKeyIndex,
@@ -347,7 +362,12 @@ function App() {
       {...handlers}
       style={{ height: "100svh", display: "flex", alignItems: "center" }}
     >
-      <Misc />
+      <Misc
+        audioEnabled={audioEnabled}
+        onAudioToggle={() => {
+          setAudioEnabled((prev) => !prev);
+        }}
+      />
 
       <div className={styles.mainContainer}>
         {gameStatus === GameStatus.GET_READY && <GetReady round={round} />}
