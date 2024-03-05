@@ -1,4 +1,4 @@
-import { Key, Stratogem } from "./types";
+import { Key, Stratagem } from "./types";
 
 import LIFT_850_Jump_Pack from "./assets/Packs/HD2-JP.png";
 import B_1_Supply_Pack from "./assets/Packs/HD2-SP.png";
@@ -67,7 +67,7 @@ export const keyCodeToKey = {
   68: Key.RIGHT,
 };
 
-export const stratogems: Stratogem[] = [
+export const stratagems: Stratagem[] = [
   {
     name: "LIFT-850 Jump Pack",
     keys: [Key.DOWN, Key.UP, Key.UP, Key.DOWN, Key.UP],

@@ -5,7 +5,7 @@ export enum Key {
   RIGHT = "d",
 }
 
-export type Stratogem = {
+export type Stratagem = {
   name: string;
   image: string;
   keys: Key[];
@@ -17,6 +17,6 @@ export enum GameStatus {
   STARTED,
   FINISHED,
   ROUND_ENDED,
-  BETWEEN_STRATOGEMS,
+  BETWEEN_STRATAGEMS,
   GET_READY,
 }

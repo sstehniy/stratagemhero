@@ -1,5 +1,5 @@
 import { BASE_ROUND_DURATION, CRITICAL_TIME_LEFT } from "../../constants";
-import { GameStatus, Key, Stratogem } from "../../types";
+import { GameStatus, Key, Stratagem } from "../../types";
 
 import ArrowUp from "../../assets/keys/arrow_up.svg?react";
 import ArrowDown from "../../assets/keys/arrow_down.svg?react";
@@ -11,40 +11,40 @@ import styles from "./styles.module.css";
 
 export const Game = ({
   currentRoundScore,
-  currentRoundStratogems,
-  currentStratogem,
+  currentRoundStratagems,
+  currentStratagem,
   gameStatus,
   round,
   timeLeftForRound,
   totalScore,
-  currentStratogemKeyIndex,
+  currentStratagemKeyIndex,
   wrongKeyPressed,
 }: {
   gameStatus: GameStatus;
   round: number;
   totalScore: number;
   currentRoundScore: number;
-  currentStratogem: number;
-  currentRoundStratogems: (Stratogem & { uid: string })[];
+  currentStratagem: number;
+  currentRoundStratagems: (Stratagem & { uid: string })[];
   timeLeftForRound: number;
-  currentStratogemKeyIndex: number;
+  currentStratagemKeyIndex: number;
   wrongKeyPressed: boolean;
 }) => {
   const renderKey = (key: Key, idx: number) => {
     let style: CSSProperties = {
       fill: "var(--lightgrey)",
     };
-    if (idx < currentStratogemKeyIndex) {
+    if (idx < currentStratagemKeyIndex) {
       style = {
         fill: "var(--yellow)",
       };
     }
-    if (gameStatus === GameStatus.BETWEEN_STRATOGEMS) {
+    if (gameStatus === GameStatus.BETWEEN_STRATAGEMS) {
       style = {
         fill: "var(--yellow)",
       };
     }
-    if (wrongKeyPressed && idx < currentStratogemKeyIndex) {
+    if (wrongKeyPressed && idx < currentStratagemKeyIndex) {
       style = {
         fill: "var(--danger)",
       };
@@ -98,21 +98,21 @@ export const Game = ({
         </div>
       </div>
       <div
-        className={`${styles.stratogemImagesContainer} ${timeLeftForRound <= CRITICAL_TIME_LEFT ? styles.danger : ""} ${styles.noscrollbar}`}
+        className={`${styles.stratagemImagesContainer} ${timeLeftForRound <= CRITICAL_TIME_LEFT ? styles.danger : ""} ${styles.noscrollbar}`}
       >
-        {currentRoundStratogems.slice(currentStratogem).map((str, idx) => (
+        {currentRoundStratagems.slice(currentStratagem).map((str, idx) => (
           <div
-            className={`${styles.stratogemImage} ${idx === 0 ? styles.active : ""} ${
+            className={`${styles.stratagemImage} ${idx === 0 ? styles.active : ""} ${
               timeLeftForRound <= CRITICAL_TIME_LEFT ? styles.danger : ""
             }`}
             key={str.uid}
           >
-            <img src={str.image} className={styles.stratogemImage} />
+            <img src={str.image} className={styles.stratagemImage} />
           </div>
         ))}
       </div>
       <div
-        className={styles.stratogemName}
+        className={styles.stratagemName}
         style={{
           backgroundColor:
             timeLeftForRound <= CRITICAL_TIME_LEFT
@@ -123,10 +123,10 @@ export const Game = ({
             timeLeftForRound <= CRITICAL_TIME_LEFT ? "white" : "var(--dark)",
         }}
       >
-        {currentRoundStratogems[currentStratogem].name.toUpperCase()}
+        {currentRoundStratagems[currentStratagem].name.toUpperCase()}
       </div>
       <div className={styles.keysContainer}>
-        {currentRoundStratogems[currentStratogem].keys.map((key, idx) =>
+        {currentRoundStratagems[currentStratagem].keys.map((key, idx) =>
           renderKey(key, idx),
         )}
       </div>

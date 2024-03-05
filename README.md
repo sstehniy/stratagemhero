@@ -1,4 +1,4 @@
-# Stratogem Hero mini-game recreated for your web-browser
+# Stratagem Hero mini-game recreated for your web-browser
 
 ## Features
 

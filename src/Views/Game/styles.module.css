@@ -44,15 +44,15 @@
   font-weight: bolder;
 }
 
-.stratogemImagesContainer {
+.stratagemImagesContainer {
   display: flex;
   gap: 20px;
   width: 100%;
-  overflow-x: auto;
+  overflow-x: hidden;
   align-items: center;
 }
 
-.stratogemImage {
+.stratagemImage {
   height: 50px;
   width: 50px;
   flex-shrink: 0;
@@ -60,22 +60,22 @@
   overflow: hidden;
 }
 
-.stratogemImage:not(.active) {
+.stratagemImage:not(.active) {
   filter: opacity(0.6);
 }
 
-.stratogemImage img {
+.stratagemImage img {
   height: 100%;
   width: 100%;
 }
 
-.stratogemImage.active {
+.stratagemImage.active {
   height: 90px;
   width: 90px;
   padding: 10px;
 }
 
-.stratogemImage.active::after {
+.stratagemImage.active::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -86,7 +86,7 @@
   border: 5px solid var(--yellow);
 }
 
-.stratogemImage.active.danger::after {
+.stratagemImage.active.danger::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -97,7 +97,7 @@
   border: 5px solid var(--danger);
 }
 
-.stratogemName {
+.stratagemName {
   text-align: center;
   font-size: 16px;
   padding: 5px 0;
@@ -177,22 +177,22 @@
     font-size: 35px;
   }
 
-  .stratogemImagesContainer {
+  .stratagemImagesContainer {
     width: 600px;
   }
 
-  .stratogemImage {
+  .stratagemImage {
     height: 70px;
     width: 70px;
   }
 
-  .stratogemImage.active {
+  .stratagemImage.active {
     height: 120px;
     width: 120px;
     padding: 15px;
   }
 
-  .stratogemName {
+  .stratagemName {
     font-size: 30px;
     padding: 0;
   }
@@ -244,23 +244,23 @@
     font-size: 45px;
   }
 
-  .stratogemImagesContainer {
+  .stratagemImagesContainer {
     width: 700px;
     overflow-x: hidden;
   }
 
-  .stratogemImage {
+  .stratagemImage {
     height: 87px;
     width: 87px;
   }
 
-  .stratogemImage.active {
+  .stratagemImage.active {
     height: 150px;
     width: 150px;
     padding: 15px;
   }
 
-  .stratogemName {
+  .stratagemName {
     font-size: 36px;
     padding: 0;
   }

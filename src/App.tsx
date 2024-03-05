@@ -1,26 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import styles from "./App.module.css";
-import { GameStatus, Stratogem } from "./types";
+import { GameStatus, Stratagem } from "./types";
 
 import { GetReady } from "./Views/GetReady";
 import { StartScreen } from "./Views/StartScreen";
 import {
   BASE_ROUND_BONUS,
   BASE_ROUND_DURATION,
-  BASE_STRATOGEM_COUNT,
+  BASE_STRATAGEM_COUNT,
   FINISHED_SCREEN_DURATION,
   FOLLOWING_ROUND_BONUS_ADDITION,
   GET_READY_DURATION,
   PERFECT_ROUND_BONUS,
   SHOW_ROUND_STATS_DURATION,
-  STRATOGEM_COMPLETION_BONUS_PER_KEY,
+  STRATAGEM_COMPLETION_BONUS_PER_KEY,
   TIME_BETWEEN_ROUNDS,
   TIME_INTERVAL_DECREMENT,
 } from "./constants";
 import { RoundStats } from "./Views/RoundStats";
 import { GameFinished } from "./Views/GameFinished";
-import { shuffleStratogems, triggerKeydownEvent, waitForTimeout } from "./util";
+import { shuffleStratagems, triggerKeydownEvent, waitForTimeout } from "./util";
 import { Game } from "./Views/Game";
 import { Misc } from "./components/Misc";
 import { useSwipeable } from "react-swipeable";
@@ -34,12 +34,12 @@ function App() {
   const [round, setRound] = useState(1);
   const [isPerfectRound, setIsPerfectRound] = useState(true);
   const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.NONE);
-  const [currentRoundStratogems, setCurrentRoundStratogems] = useState<
-    (Stratogem & { uid: string })[]
+  const [currentRoundStratagems, setCurrentRoundStratagems] = useState<
+    (Stratagem & { uid: string })[]
   >([]);
-  const [currentStratogem, setCurrentStratogem] = useState(0);
+  const [currentStratagem, setCurrentStratagem] = useState(0);
   const [timeLeftForRound, setTimeLeftForRound] = useState(BASE_ROUND_DURATION);
-  const [currentStratogemKeyIndex, setCurrentStratogemKeyIndex] = useState(0);
+  const [currentStratagemKeyIndex, setCurrentStratagemKeyIndex] = useState(0);
   const [wrongKeyPressed, setWrongKeyPressed] = useState(false);
   const handlers = useSwipeable({
     delta: 50,
@@ -82,15 +82,15 @@ function App() {
   const handleStartGame = useCallback(() => {
     setWrongKeyPressed(false);
     setRound(1);
-    const roundStratogems = shuffleStratogems(
-      BASE_STRATOGEM_COUNT + (round - 1),
+    const roundStratagems = shuffleStratagems(
+      BASE_STRATAGEM_COUNT + (round - 1),
     );
     setTimeLeftForRound(BASE_ROUND_DURATION);
-    setCurrentRoundStratogems(roundStratogems);
+    setCurrentRoundStratagems(roundStratagems);
     setTotalScore(0);
     setCurrentRoundScore(0);
-    setCurrentStratogem(0);
-    setCurrentStratogemKeyIndex(0);
+    setCurrentStratagem(0);
+    setCurrentStratagemKeyIndex(0);
     setGameStatus(GameStatus.GET_READY);
   }, [round]);
 
@@ -110,10 +110,10 @@ function App() {
   const startNextRound = useCallback(() => {
     setRound((prev) => prev + 1);
     setCurrentRoundScore(0);
-    setCurrentRoundStratogems(shuffleStratogems(BASE_STRATOGEM_COUNT + round));
-    setCurrentStratogem(0);
+    setCurrentRoundStratagems(shuffleStratagems(BASE_STRATAGEM_COUNT + round));
+    setCurrentStratagem(0);
     setIsPerfectRound(true);
-    setCurrentStratogemKeyIndex(0);
+    setCurrentStratagemKeyIndex(0);
     setTimeLeftForRound(BASE_ROUND_DURATION);
     setGameStatus(GameStatus.GET_READY);
   }, [round]);
@@ -121,15 +121,15 @@ function App() {
   const handleKeyStroke = useCallback(
     async (e: KeyboardEvent) => {
       setWrongKeyPressed(false);
-      const currentStratogemObject = currentRoundStratogems[currentStratogem];
-      const currentStratogemKey =
-        currentStratogemObject.keys[currentStratogemKeyIndex];
-      // e.key === currentStratogemKey && currentStratogemKeyIndex === currentStratogemObject.keyCount - 1 &&
-      if (e.key === currentStratogemKey) {
-        // last key in current stratogem of current round
-        if (currentStratogemKeyIndex === currentStratogemObject.keyCount - 1) {
-          // current stratogem is the last in current round
-          if (currentStratogem === currentRoundStratogems.length - 1) {
+      const currentStratagemObject = currentRoundStratagems[currentStratagem];
+      const currentStratagemKey =
+        currentStratagemObject.keys[currentStratagemKeyIndex];
+      // e.key === currentStratagemKey && currentStratagemKeyIndex === currentStratagemObject.keyCount - 1 &&
+      if (e.key === currentStratagemKey) {
+        // last key in current stratagem of current round
+        if (currentStratagemKeyIndex === currentStratagemObject.keyCount - 1) {
+          // current stratagem is the last in current round
+          if (currentStratagem === currentRoundStratagems.length - 1) {
             if (intervalRef.current) {
               clearInterval(intervalRef.current);
             }
@@ -138,10 +138,10 @@ function App() {
             setTimeLeftForRound(
               (prev) =>
                 prev +
-                currentStratogemObject.keyCount *
-                  STRATOGEM_COMPLETION_BONUS_PER_KEY,
+                currentStratagemObject.keyCount *
+                  STRATAGEM_COMPLETION_BONUS_PER_KEY,
             );
-            setGameStatus(GameStatus.BETWEEN_STRATOGEMS);
+            setGameStatus(GameStatus.BETWEEN_STRATAGEMS);
             await waitForTimeout(TIME_BETWEEN_ROUNDS);
             updateScoreOnRoundCompletion();
             setGameStatus(GameStatus.ROUND_ENDED);
@@ -150,25 +150,25 @@ function App() {
             startNextRound();
             return;
           } else {
-            // move to next stratogem in current round
-            const roundScore = currentStratogemObject.keyCount * 5;
+            // move to next stratagem in current round
+            const roundScore = currentStratagemObject.keyCount * 5;
 
             // add bonus time to current round
             setTimeLeftForRound(
               (prev) =>
                 prev +
-                currentStratogemObject.keyCount *
-                  STRATOGEM_COMPLETION_BONUS_PER_KEY,
+                currentStratagemObject.keyCount *
+                  STRATAGEM_COMPLETION_BONUS_PER_KEY,
             );
-            setGameStatus(GameStatus.BETWEEN_STRATOGEMS);
+            setGameStatus(GameStatus.BETWEEN_STRATAGEMS);
             await waitForTimeout(TIME_BETWEEN_ROUNDS);
             setCurrentRoundScore((prev) => prev + roundScore);
-            setCurrentStratogemKeyIndex(0);
-            setCurrentStratogem(currentStratogem + 1);
+            setCurrentStratagemKeyIndex(0);
+            setCurrentStratagem(currentStratagem + 1);
             setGameStatus(GameStatus.STARTED);
           }
         } else {
-          setCurrentStratogemKeyIndex((prev) => prev + 1);
+          setCurrentStratagemKeyIndex((prev) => prev + 1);
         }
       } else if (["w", "a", "s", "d"].includes(e.key)) {
         window.removeEventListener("keydown", handleKeyStroke);
@@ -176,14 +176,14 @@ function App() {
         setIsPerfectRound(false);
         window.addEventListener("keydown", handleKeyStroke);
         await waitForTimeout(100);
-        setCurrentStratogemKeyIndex(0);
+        setCurrentStratagemKeyIndex(0);
         setWrongKeyPressed(false);
       }
     },
     [
-      currentRoundStratogems,
-      currentStratogem,
-      currentStratogemKeyIndex,
+      currentRoundStratagems,
+      currentStratagem,
+      currentStratagemKeyIndex,
       updateScoreOnRoundCompletion,
       startNextRound,
     ],
@@ -208,7 +208,7 @@ function App() {
       }
       if (
         gameStatus === GameStatus.ROUND_ENDED ||
-        gameStatus === GameStatus.BETWEEN_STRATOGEMS
+        gameStatus === GameStatus.BETWEEN_STRATAGEMS
       ) {
         if (intervalRef.current) clearInterval(intervalRef.current);
         window.removeEventListener("keydown", handleKeyStroke);
@@ -254,9 +254,9 @@ function App() {
       window.removeEventListener("keydown", handleStartGameKeyPress);
     };
   }, [
-    currentRoundStratogems,
-    currentStratogem,
-    currentStratogemKeyIndex,
+    currentRoundStratagems,
+    currentStratagem,
+    currentStratagemKeyIndex,
     gameStatus,
     handleKeyStroke,
     handleStartGameKeyPress,
@@ -286,18 +286,18 @@ function App() {
           <GameFinished totalScore={totalScore} />
         )}
         {(gameStatus === GameStatus.STARTED ||
-          gameStatus === GameStatus.BETWEEN_STRATOGEMS ||
+          gameStatus === GameStatus.BETWEEN_STRATAGEMS ||
           gameStatus === GameStatus.GET_READY) && (
           <Game
             currentRoundScore={currentRoundScore}
             timeLeftForRound={timeLeftForRound}
-            currentStratogemKeyIndex={currentStratogemKeyIndex}
+            currentStratagemKeyIndex={currentStratagemKeyIndex}
             wrongKeyPressed={wrongKeyPressed}
-            currentRoundStratogems={currentRoundStratogems}
+            currentRoundStratagems={currentRoundStratagems}
             gameStatus={gameStatus}
             round={round}
             totalScore={totalScore}
-            currentStratogem={currentStratogem}
+            currentStratagem={currentStratagem}
           />
         )}
       </div>

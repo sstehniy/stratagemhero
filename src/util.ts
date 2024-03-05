@@ -1,13 +1,13 @@
 import { v4 } from "uuid";
-import { stratogems } from "./config";
-import { Stratogem } from "./types";
+import { stratagems } from "./config";
+import { Stratagem } from "./types";
 
-const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
-  const shuffled: (Stratogem & { uid: string })[] = [];
+const shuffleStratagems = (count: number): (Stratagem & { uid: string })[] => {
+  const shuffled: (Stratagem & { uid: string })[] = [];
   for (let i = 0; i < count; i++) {
-    const randomIndex = Math.floor(Math.random() * stratogems.length);
-    const stratogem = { ...stratogems[randomIndex], uid: v4() };
-    shuffled.push(stratogem);
+    const randomIndex = Math.floor(Math.random() * stratagems.length);
+    const stratagem = { ...stratagems[randomIndex], uid: v4() };
+    shuffled.push(stratagem);
   }
   return shuffled;
 };
@@ -20,4 +20,4 @@ const triggerKeydownEvent = (key: string) => {
   window.dispatchEvent(event);
 };
 
-export { shuffleStratogems, waitForTimeout, triggerKeydownEvent };
+export { shuffleStratagems, waitForTimeout, triggerKeydownEvent };
