@@ -15,4 +15,9 @@ const shuffleStratogems = (count: number): (Stratogem & { uid: string })[] => {
 const waitForTimeout = (timeout: number) =>
   new Promise((resolve) => setTimeout(resolve, timeout));
 
-export { shuffleStratogems, waitForTimeout };
+const triggerKeydownEvent = (key: string) => {
+  const event = new KeyboardEvent("keydown", { key });
+  window.dispatchEvent(event);
+};
+
+export { shuffleStratogems, waitForTimeout, triggerKeydownEvent };

@@ -20,15 +20,11 @@ import {
 } from "./constants";
 import { RoundStats } from "./Views/RoundStats";
 import { GameFinished } from "./Views/GameFinished";
-import { shuffleStratogems, waitForTimeout } from "./util";
+import { shuffleStratogems, triggerKeydownEvent, waitForTimeout } from "./util";
 import { Game } from "./Views/Game";
 import { Misc } from "./components/Misc";
 import { useSwipeable } from "react-swipeable";
-
-const triggerKeydownEvent = (key: string) => {
-  const event = new KeyboardEvent("keydown", { key });
-  window.dispatchEvent(event);
-};
+import { useGamepadInput } from "./hooks/useGamepad";
 
 function App() {
   const [totalScore, setTotalScore] = useState(0);
@@ -80,6 +76,8 @@ function App() {
   const isMobile = useRef(
     /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
   );
+
+  useGamepadInput();
 
   const handleStartGame = useCallback(() => {
     setWrongKeyPressed(false);
