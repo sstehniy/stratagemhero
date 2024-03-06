@@ -325,27 +325,13 @@ function App() {
         return;
       }
 
-      if (intervalRef.current) clearInterval(intervalRef.current);
-
       if (gameStatus === GameStatus.STARTED) {
         window.addEventListener("keydown", handleKeyStroke);
-
-        intervalRef.current = setInterval(() => {
-          setTimeLeftForRound((prev) => {
-            const newTime = prev - Math.min(prev, TIME_INTERVAL_DECREMENT);
-            if (newTime === 0) {
-              playSound(audioEnabled, playGameEndedSound);
-              setGameStatus(GameStatus.FINISHED);
-            }
-            return newTime;
-          });
-        }, TIME_INTERVAL_DECREMENT);
       }
     };
     setup();
 
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
       window.removeEventListener("keydown", handleKeyStroke);
       window.removeEventListener("keydown", handleStartGameKeyPress);
     };
@@ -359,6 +345,26 @@ function App() {
     handleStartGameKeyPress,
     playGameEndedSound,
   ]);
+
+  useEffect(() => {
+    if (gameStatus === GameStatus.STARTED) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => {
+        setTimeLeftForRound((prev) => {
+          const newTime = prev - Math.min(prev, TIME_INTERVAL_DECREMENT);
+          if (newTime === 0) {
+            playSound(audioEnabled, playGameEndedSound);
+            setGameStatus(GameStatus.FINISHED);
+          }
+          return newTime;
+        });
+      }, TIME_INTERVAL_DECREMENT);
+    }
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [audioEnabled, gameStatus, playGameEndedSound]);
 
   return (
     <div

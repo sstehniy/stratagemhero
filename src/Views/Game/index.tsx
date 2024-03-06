@@ -1,4 +1,8 @@
-import { BASE_ROUND_DURATION, CRITICAL_TIME_LEFT } from "../../constants";
+import {
+  BASE_ROUND_DURATION,
+  CRITICAL_TIME_LEFT,
+  TIME_INTERVAL_DECREMENT,
+} from "../../constants";
 import { GameStatus, Key, Stratagem } from "../../types";
 
 import ArrowUp from "../../assets/keys/arrow_up.svg?react";
@@ -134,7 +138,9 @@ export const Game = ({
         <div
           className={styles.timeBar}
           style={{
-            width: `${(timeLeftForRound / BASE_ROUND_DURATION) * 100}%`,
+            maxWidth: `${(timeLeftForRound / BASE_ROUND_DURATION) * 100}%`,
+            width: "100%",
+            transition: `max-width ${TIME_INTERVAL_DECREMENT}ms linear`,
             backgroundColor:
               timeLeftForRound <= CRITICAL_TIME_LEFT
                 ? "var(--danger)"
