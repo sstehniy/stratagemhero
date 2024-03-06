@@ -7,7 +7,8 @@
 3. Fully responsive design
 4. Swipe controls for mobile devices
 5. Full offline support for supported browsers
+6. Original sounds (can be turned off)
 
 Coming soon:
 
-- Sounds from the original game
+- Local highscore
