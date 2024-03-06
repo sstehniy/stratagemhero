@@ -278,3 +278,33 @@
     height: 30px;
   }
 }
+
+.retryButton {
+  position: absolute;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: var(--yellow);
+  color: var(--dark);
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--grey);
+  color: var(--light);
+  font-size: 22px;
+  font-weight: bold;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.retryButton:hover,
+.retryButton:focus {
+
+  outline: 4px solid var(--yellow);
+}

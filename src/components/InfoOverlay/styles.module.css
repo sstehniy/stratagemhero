@@ -47,7 +47,6 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  flex-shrink: 0;
 }
 
 .overlayButton:hover {

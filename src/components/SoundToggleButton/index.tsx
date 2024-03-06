@@ -9,6 +9,7 @@ export const ToggleSoundButton = ({
 }) => {
   return (
     <button
+      tabIndex={-1}
       className={styles.toggleButton}
       onClick={() => {
         onToggle();

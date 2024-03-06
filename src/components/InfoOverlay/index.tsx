@@ -54,6 +54,7 @@ export const InfoOverlayButton = () => {
   return (
     <>
       <button
+        tabIndex={-1}
         className={styles.overlayButton}
         onClick={() => {
           setShowOverlay(!showOverlay);

@@ -346,6 +346,12 @@ function App() {
     playGameEndedSound,
   ]);
 
+  const handleRetry = useCallback(() => {
+    // set to initial state with game status none
+    stopGameSound();
+    setGameStatus(GameStatus.NONE);
+  }, [stopGameSound]);
+
   useEffect(() => {
     if (gameStatus === GameStatus.STARTED) {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -421,6 +427,7 @@ function App() {
                 round={round}
                 totalScore={totalScore}
                 currentStratagem={currentStratagem}
+                handleRetry={handleRetry}
               />
             )}
           </div>
