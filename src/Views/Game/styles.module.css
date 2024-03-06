@@ -52,7 +52,7 @@
   align-items: center;
 }
 
-.stratagemImage {
+.stratagemImageWrapper {
   height: 50px;
   width: 50px;
   flex-shrink: 0;
@@ -60,22 +60,34 @@
   overflow: hidden;
 }
 
-.stratagemImage:not(.active) {
-  filter: opacity(0.6);
+/* add yellow glow filter to the image */
+.stratagemImageWrapper.active.blink {
+  animation: blink 0.3s linear;
 }
 
-.stratagemImage img {
+@keyframes blink {
+  0% {
+    filter: drop-shadow(0 0 0px var(--yellow));
+  }
+
+  100% {
+    filter: drop-shadow(0 0 2px var(--yellow));
+  }
+}
+
+
+.stratagemImageWrapper img {
   height: 100%;
   width: 100%;
 }
 
-.stratagemImage.active {
+.stratagemImageWrapper.active {
   height: 90px;
   width: 90px;
   padding: 10px;
 }
 
-.stratagemImage.active::after {
+.stratagemImageWrapper.active::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -86,7 +98,12 @@
   border: 5px solid var(--yellow);
 }
 
-.stratagemImage.active.danger::after {
+.stratagemImageWrapper:not(.active) {
+  filter: opacity(0.6);
+}
+
+
+.stratagemImageWrapper.active.danger::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -95,6 +112,11 @@
   top: 0;
   background-color: transparent;
   border: 5px solid var(--danger);
+}
+
+.stratagemImage {
+  width: 100%;
+  height: 100%;
 }
 
 .stratagemName {
@@ -181,12 +203,12 @@
     width: 600px;
   }
 
-  .stratagemImage {
+  .stratagemImageWrapper {
     height: 70px;
     width: 70px;
   }
 
-  .stratagemImage.active {
+  .stratagemImageWrapper.active {
     height: 120px;
     width: 120px;
     padding: 15px;
@@ -249,12 +271,12 @@
     overflow-x: hidden;
   }
 
-  .stratagemImage {
+  .stratagemImageWrapper {
     height: 87px;
     width: 87px;
   }
 
-  .stratagemImage.active {
+  .stratagemImageWrapper.active {
     height: 150px;
     width: 150px;
     padding: 15px;

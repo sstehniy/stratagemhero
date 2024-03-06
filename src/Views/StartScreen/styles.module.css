@@ -29,7 +29,7 @@
   color: var(--dark);
 }
 
-@media screen and (min-width: 769px) {
+@media screen and (min-width: 541px) {
   .title {
     font-size: 70px;
     margin-bottom: 75px;

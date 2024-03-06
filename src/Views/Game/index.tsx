@@ -108,9 +108,9 @@ export const Game = ({
       >
         {currentRoundStratagems.slice(currentStratagem).map((str, idx) => (
           <div
-            className={`${styles.stratagemImage} ${idx === 0 ? styles.active : ""} ${
+            className={`${styles.stratagemImageWrapper} ${idx === 0 ? styles.active : ""} ${
               timeLeftForRound <= CRITICAL_TIME_LEFT ? styles.danger : ""
-            }`}
+            } ${gameStatus === GameStatus.BETWEEN_STRATAGEMS ? styles.blink : ""}`}
             key={str.uid}
           >
             <img src={str.image} className={styles.stratagemImage} />
