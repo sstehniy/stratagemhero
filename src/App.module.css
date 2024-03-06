@@ -18,3 +18,16 @@
   top: 10px;
   right: 10px;
 }
+
+.welcomeButton {
+  padding: 1rem;
+  font-size: 1.5rem;
+  background-color: var(--yellow);
+  color: var(--dark);
+  border: 3px solid var(--grey);
+  box-shadow: 0 0 2px 0 var(--yellow);
+  cursor: pointer;
+  border-radius: 12px;
+  font-family: var(--font);
+  font-weight: bold;
+}

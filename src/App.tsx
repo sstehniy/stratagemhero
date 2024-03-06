@@ -366,26 +366,17 @@ function App() {
       style={{ height: "100svh", display: "flex", alignItems: "center" }}
     >
       {gameStatus === GameStatus.WELCOME ? (
-        <button
-          onClick={() => {
-            initializeAudioContext();
-            setGameStatus(GameStatus.NONE);
-          }}
-          style={{
-            padding: "1rem",
-            fontSize: "1.5rem",
-            backgroundColor: "var(--yellow)",
-            color: "var(--dark)",
-            border: "3px solid var(--grey)",
-            boxShadow: "0 0 2px 0 var(--yellow)",
-            cursor: "pointer",
-            borderRadius: "12px",
-            fontFamily: "var(--font)",
-            fontWeight: "bold",
-          }}
-        >
-          DO MY PART!
-        </button>
+        <div className={styles.mainContainer}>
+          <button
+            onClick={() => {
+              initializeAudioContext();
+              setGameStatus(GameStatus.NONE);
+            }}
+            className={styles.welcomeButton}
+          >
+            DO MY PART!
+          </button>
+        </div>
       ) : (
         <>
           <Misc
