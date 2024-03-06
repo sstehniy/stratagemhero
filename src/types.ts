@@ -19,4 +19,5 @@ export enum GameStatus {
   ROUND_ENDED,
   BETWEEN_STRATAGEMS,
   GET_READY,
+  WELCOME,
 }

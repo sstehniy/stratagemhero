@@ -35,6 +35,7 @@ import { Misc } from "./components/Misc";
 import { useSwipeable } from "react-swipeable";
 import { useGamepadInput } from "./hooks/useGamepad";
 import { useSound } from "./hooks/useSound";
+import { useAudioContext } from "./AudioContextProvider";
 
 const playSound = (allowed: boolean, sound: () => void) => {
   if (allowed) {
@@ -49,7 +50,7 @@ function App() {
   const [currentRoundTimeBonus, setCurrentRoundTimeBonus] = useState(0);
   const [round, setRound] = useState(1);
   const [isPerfectRound, setIsPerfectRound] = useState(true);
-  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.NONE);
+  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.WELCOME);
   const [currentRoundStratagems, setCurrentRoundStratagems] = useState<
     (Stratagem & { uid: string })[]
   >([]);
@@ -58,6 +59,7 @@ function App() {
   const [currentStratagemKeyIndex, setCurrentStratagemKeyIndex] = useState(0);
   const [wrongKeyPressed, setWrongKeyPressed] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
+  const { initializeAudioContext } = useAudioContext();
   const [playStartGameSound] = useSound(introAudio, {
     loop: false,
     interrupt: true,
@@ -363,45 +365,70 @@ function App() {
       {...handlers}
       style={{ height: "100svh", display: "flex", alignItems: "center" }}
     >
-      <Misc
-        audioEnabled={audioEnabled}
-        onAudioToggle={() => {
-          setAudioEnabled((prev) => !prev);
-        }}
-      />
+      {gameStatus === GameStatus.WELCOME ? (
+        <button
+          onClick={() => {
+            initializeAudioContext();
+            setGameStatus(GameStatus.NONE);
+          }}
+          style={{
+            padding: "1rem",
+            fontSize: "1.5rem",
+            backgroundColor: "var(--yellow)",
+            color: "var(--dark)",
+            border: "3px solid var(--grey)",
+            boxShadow: "0 0 2px 0 var(--yellow)",
+            cursor: "pointer",
+            borderRadius: "12px",
+            fontFamily: "var(--font)",
+            fontWeight: "bold",
+          }}
+        >
+          DO MY PART!
+        </button>
+      ) : (
+        <>
+          <Misc
+            audioEnabled={audioEnabled}
+            onAudioToggle={() => {
+              setAudioEnabled((prev) => !prev);
+            }}
+          />
 
-      <div className={styles.mainContainer}>
-        {gameStatus === GameStatus.GET_READY && <GetReady round={round} />}
-        {gameStatus === GameStatus.NONE && (
-          <StartScreen isMobile={isMobile.current} />
-        )}
-        {gameStatus === GameStatus.ROUND_ENDED && (
-          <RoundStats
-            currentRoundBaseBonus={currentRoundBaseBonus}
-            currentRoundTimeBonus={currentRoundTimeBonus}
-            isPerfectRound={isPerfectRound}
-            totalScore={totalScore}
-          />
-        )}
-        {gameStatus === GameStatus.FINISHED && (
-          <GameFinished totalScore={totalScore} />
-        )}
-        {(gameStatus === GameStatus.STARTED ||
-          gameStatus === GameStatus.BETWEEN_STRATAGEMS ||
-          gameStatus === GameStatus.GET_READY) && (
-          <Game
-            currentRoundScore={currentRoundScore}
-            timeLeftForRound={timeLeftForRound}
-            currentStratagemKeyIndex={currentStratagemKeyIndex}
-            wrongKeyPressed={wrongKeyPressed}
-            currentRoundStratagems={currentRoundStratagems}
-            gameStatus={gameStatus}
-            round={round}
-            totalScore={totalScore}
-            currentStratagem={currentStratagem}
-          />
-        )}
-      </div>
+          <div className={styles.mainContainer}>
+            {gameStatus === GameStatus.GET_READY && <GetReady round={round} />}
+            {gameStatus === GameStatus.NONE && (
+              <StartScreen isMobile={isMobile.current} />
+            )}
+            {gameStatus === GameStatus.ROUND_ENDED && (
+              <RoundStats
+                currentRoundBaseBonus={currentRoundBaseBonus}
+                currentRoundTimeBonus={currentRoundTimeBonus}
+                isPerfectRound={isPerfectRound}
+                totalScore={totalScore}
+              />
+            )}
+            {gameStatus === GameStatus.FINISHED && (
+              <GameFinished totalScore={totalScore} />
+            )}
+            {(gameStatus === GameStatus.STARTED ||
+              gameStatus === GameStatus.BETWEEN_STRATAGEMS ||
+              gameStatus === GameStatus.GET_READY) && (
+              <Game
+                currentRoundScore={currentRoundScore}
+                timeLeftForRound={timeLeftForRound}
+                currentStratagemKeyIndex={currentStratagemKeyIndex}
+                wrongKeyPressed={wrongKeyPressed}
+                currentRoundStratagems={currentRoundStratagems}
+                gameStatus={gameStatus}
+                round={round}
+                totalScore={totalScore}
+                currentStratagem={currentStratagem}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -3,6 +3,17 @@
   src: url(/KodeMono-VariableFont_wght.ttf);
 }
 
+:root {
+  --yellow: #fafbab;
+  --dark: #1B1E22;
+  --light: #F1F7FF;
+  --lightgrey: #CED3DB;
+  --darkerlightgrey: #A6AAB3;
+  --grey: #36383e;
+  --danger: #FF7E4B;
+  --font: "Kode Mono", monospace;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -18,7 +29,7 @@ body {
 }
 
 body {
-  font-family: "Kode Mono", monospace;
+  font-family: var(--font);
   font-optical-sizing: auto;
   font-style: normal;
 }
@@ -35,15 +46,7 @@ body {
 
 }
 
-:root {
-  --yellow: #fafbab;
-  --dark: #1B1E22;
-  --light: #F1F7FF;
-  --lightgrey: #CED3DB;
-  --darkerlightgrey: #A6AAB3;
-  --grey: #36383e;
-  --danger: #FF7E4B
-}
+
 
 .toast {
   width: 100%;

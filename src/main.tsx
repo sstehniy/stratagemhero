@@ -5,6 +5,7 @@ import { registerSW } from "virtual:pwa-register";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
+import { AudioContextProvider } from "./AudioContextProvider.tsx";
 
 if ("serviceWorker" in navigator) {
   // && !/localhost/.test(window.location) && !/lvh.me/.test(window.location)) {
@@ -43,7 +44,9 @@ if ("serviceWorker" in navigator) {
 }
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <AudioContextProvider>
+      <App />
+    </AudioContextProvider>
     <ToastContainer
       position="top-left"
       hideProgressBar

@@ -1,5 +1,6 @@
 import { Howl } from "howler";
 import { useCallback, useRef, useState, useEffect } from "react";
+import { useAudioContext } from "../AudioContextProvider";
 
 export const useSound = (
   url: string,
@@ -15,29 +16,11 @@ export const useSound = (
     onEnd?: () => void;
   },
 ) => {
-  const [context, setContext] = useState<AudioContext | null>(null);
+  const { context } = useAudioContext();
   const [isPlaying, setIsPlaying] = useState(false);
   const howlerRef = useRef<Howl | null>(null);
 
   // Create the AudioContext on the first user interaction
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      const audioContext = new AudioContext();
-      setContext(audioContext);
-      window.removeEventListener("keydown", handleFirstInteraction);
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-    };
-    window.addEventListener("keydown", handleFirstInteraction);
-    window.addEventListener("click", handleFirstInteraction);
-    window.addEventListener("touchstart", handleFirstInteraction);
-
-    return () => {
-      window.removeEventListener("keydown", handleFirstInteraction);
-      window.removeEventListener("click", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-    };
-  }, []);
 
   useEffect(() => {
     if (context) {
