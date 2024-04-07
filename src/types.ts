@@ -21,3 +21,15 @@ export enum GameStatus {
   GET_READY,
   WELCOME,
 }
+
+export type PlayerStats = {
+  gamesPlayed: number;
+  highscore: PlayerGame;
+  avarageScore: number;
+};
+
+export type PlayerGame = {
+  score: number;
+  date: string;
+  stratagems: string[];
+};

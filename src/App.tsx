@@ -314,7 +314,6 @@ function App() {
       }
 
       if (gameStatus === GameStatus.FINISHED) {
-        logEvent(analytics, "game_ended");
         if (intervalRef.current) clearInterval(intervalRef.current);
         window.removeEventListener("keydown", handleKeyStroke);
         await waitForTimeout(FINISHED_SCREEN_DURATION);
