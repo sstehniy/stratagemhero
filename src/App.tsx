@@ -105,14 +105,6 @@ function App() {
     loop: false,
     volume: 5,
   });
-  const pageOpened = useRef(false);
-
-  useEffect(() => {
-    if (!pageOpened.current) {
-      logEvent(analytics, "page_opened");
-      pageOpened.current = true;
-    }
-  }, []);
 
   const handlers = useSwipeable({
     delta: 50,
@@ -322,6 +314,7 @@ function App() {
       }
 
       if (gameStatus === GameStatus.FINISHED) {
+        logEvent(analytics, "game_ended");
         if (intervalRef.current) clearInterval(intervalRef.current);
         window.removeEventListener("keydown", handleKeyStroke);
         await waitForTimeout(FINISHED_SCREEN_DURATION);
