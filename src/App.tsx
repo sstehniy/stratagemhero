@@ -36,6 +36,8 @@ import { useSwipeable } from "react-swipeable";
 import { useGamepadInput } from "./hooks/useGamepad";
 import { useSound } from "./hooks/useSound";
 import { useAudioContext } from "./AudioContextProvider";
+import { analytics } from "./firebase";
+import { logEvent } from "firebase/analytics";
 
 const playSound = (allowed: boolean, sound: () => void) => {
   if (allowed) {
@@ -103,6 +105,14 @@ function App() {
     loop: false,
     volume: 5,
   });
+  const pageOpened = useRef(false);
+
+  useEffect(() => {
+    if (!pageOpened.current) {
+      logEvent(analytics, "page_opened");
+      pageOpened.current = true;
+    }
+  }, []);
 
   const handlers = useSwipeable({
     delta: 50,
@@ -143,6 +153,7 @@ function App() {
   useGamepadInput();
 
   const handleStartGame = useCallback(() => {
+    logEvent(analytics, "game_started");
     playSound(audioEnabled, playStartGameSound);
     setWrongKeyPressed(false);
     setRound(1);
@@ -239,8 +250,8 @@ function App() {
           setCurrentStratagemKeyIndex((prev) => prev + 1);
         }
       } else if (["w", "a", "s", "d"].includes(e.key)) {
-        playSound(audioEnabled, playStratagemErrorSound);
         window.removeEventListener("keydown", handleKeyStroke);
+        playSound(audioEnabled, playStratagemErrorSound);
         setWrongKeyPressed(true);
         setIsPerfectRound(false);
         window.addEventListener("keydown", handleKeyStroke);
