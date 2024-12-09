@@ -362,6 +362,7 @@ function App() {
         setTimeLeftForRound((prev) => {
           const newTime = prev - Math.min(prev, TIME_INTERVAL_DECREMENT);
           if (newTime === 0) {
+            updateScoreOnRoundCompletion();
             playSound(audioEnabled, playGameEndedSound);
             setGameStatus(GameStatus.FINISHED);
           }
@@ -373,7 +374,12 @@ function App() {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [audioEnabled, gameStatus, playGameEndedSound]);
+  }, [
+    audioEnabled,
+    gameStatus,
+    playGameEndedSound,
+    updateScoreOnRoundCompletion,
+  ]);
 
   return (
     <div

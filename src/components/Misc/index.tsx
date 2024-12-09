@@ -1,4 +1,4 @@
-import { InfoOverlayButton } from "../InfoOverlay";
+import { InfoModalButton } from "../InfoModal";
 import { ToggleSoundButton } from "../SoundToggleButton";
 import styles from "./styles.module.css";
 
@@ -12,7 +12,7 @@ export const Misc = ({
   return (
     <div className={styles.miscContainer}>
       <ToggleSoundButton onToggle={onAudioToggle} enabled={audioEnabled} />
-      <InfoOverlayButton />
+      <InfoModalButton />
     </div>
   );
 };

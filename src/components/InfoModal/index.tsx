@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import styles from "./styles.module.css"; // Updated import to match new CSS module file
 import { useState } from "react";
 
-const InfoOverlay = ({ onClose }: { onClose: () => void }) => {
+const InfoModal = ({ onClose }: { onClose: () => void }) => {
   return createPortal(
     <div className={styles.overlayContainer} onClick={onClose}>
       <div
@@ -49,7 +49,7 @@ const InfoOverlay = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
-export const InfoOverlayButton = () => {
+export const InfoModalButton = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   return (
     <>
@@ -73,7 +73,7 @@ export const InfoOverlayButton = () => {
         </svg>
       </button>
       {showOverlay && (
-        <InfoOverlay
+        <InfoModal
           onClose={() => {
             setShowOverlay(false);
           }}
